@@ -1,17 +1,35 @@
 @import "tailwindcss";
 
-@theme {
-  --font-display: "Archivo Black", "Arial Black", system-ui, sans-serif;
-  --font-sans: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+/*
+  STARK HUD design system
+  -----------------------
+  Built from how the real Iron Man HUD / J.A.R.V.I.S. teams worked (Cantina Creative,
+  Jayse Hansen, The Orphanage, Perception):
+  - White primary data with ice-cyan holo accents (Mark III went "white with colored accents")
+  - Eurostile/Microgramma-style extended type for labels (Michroma), squared UI type (Rajdhani),
+    micro-text that shows REAL data, never filler (Share Tech Mono)
+  - Every widget has a job. One "alpha event" per moment gets the amber highlight.
+  - Layered depth: rings and panels on different planes, slight parallax, fly-in from depth
+  - Lots of black negative space so the content (the characters) stays the hero
+*/
 
-  --color-night: #0b0e1a;
-  --color-panel: #141a2e;
-  --color-panel-2: #1b2340;
-  --color-line: #29345a;
-  --color-muted: #8f9bc2;
-  --color-gold: #f5b301;
+@theme {
+  --font-hud: "Michroma", "Eurostile", "Microgramma", sans-serif;
+  --font-sans: "Rajdhani", system-ui, sans-serif;
+  --font-mono: "Share Tech Mono", ui-monospace, monospace;
+  --font-logo: "Anton", "Impact", sans-serif;
+
+  --color-void: #02060b;
+  --color-deep: #061321;
+  --color-holo: #7fe8ff;
+  --color-holo-dim: #2b7a93;
+  --color-ice: #eafcff;
+  --color-amber: #ffb547;
   --color-hit: #2e7d32;
+  --color-hit-glow: #5dff9e;
   --color-miss: #c62828;
+  --color-miss-glow: #ff6464;
+  --color-marvel: #ed1d24;
 }
 
 html,
@@ -22,41 +40,211 @@ body,
 
 body {
   margin: 0;
-  background-color: var(--color-night);
-  background-image:
-    radial-gradient(60rem 30rem at 50% -10rem, rgb(245 179 1 / 0.10), transparent 70%),
-    linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
-  background-size: auto, 32px 32px, 32px 32px;
-  color: #e8ecf8;
+  background: var(--color-void);
+  color: var(--color-ice);
   font-family: var(--font-sans);
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
 }
 
-/* thin, dark scrollbars for the guess grid + dropdown */
-.scroll-thin {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-line) transparent;
+::selection {
+  background: rgb(127 232 255 / 0.35);
 }
 
-/* 7 tiles + 6 gaps (4px) must fit a phone screen; caps at 64px on bigger screens */
+/* ── Holo text + glow helpers ───────────────────────────────────────────── */
+.holo-text {
+  color: var(--color-holo);
+  text-shadow: 0 0 10px rgb(127 232 255 / 0.55);
+}
+.glow-line {
+  box-shadow: 0 0 8px rgb(127 232 255 / 0.5);
+}
+.label {
+  font-family: var(--font-hud);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-holo);
+}
+
+/* ── Panels: glass with cut corners + corner brackets ───────────────────── */
+/* .hud-frame = same look, but the glass sits on a separate layer so dropdowns
+   inside it aren't clipped by the cut corners */
+.hud-frame {
+  position: relative;
+  isolation: isolate;
+}
+.hud-frame > .hud-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.hud-frame > .hud-bg::before,
+.hud-frame > .hud-bg::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 1.5px;
+  background: rgb(127 232 255 / 0.95);
+}
+.hud-frame > .hud-bg::before {
+  top: 6.5px;
+  left: -3px;
+  transform: rotate(-45deg);
+}
+.hud-frame > .hud-bg::after {
+  bottom: 6.5px;
+  right: -3px;
+  transform: rotate(-45deg);
+}
+.hud-bg .glass {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(127 232 255 / 0.07), rgb(127 232 255 / 0.015) 40%, transparent),
+    rgb(4 16 28 / 0.72);
+  border: 1px solid rgb(127 232 255 / 0.22);
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  backdrop-filter: blur(6px);
+}
+
+.hud-panel {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgb(127 232 255 / 0.07), rgb(127 232 255 / 0.015) 40%, transparent),
+    rgb(4 16 28 / 0.72);
+  border: 1px solid rgb(127 232 255 / 0.22);
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  backdrop-filter: blur(6px);
+}
+.brackets {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --b: rgb(127 232 255 / 0.95);
+  --s: 12px;
+  background:
+    linear-gradient(var(--b), var(--b)) top right / var(--s) 1.5px no-repeat,
+    linear-gradient(var(--b), var(--b)) top right / 1.5px var(--s) no-repeat,
+    linear-gradient(var(--b), var(--b)) bottom left / var(--s) 1.5px no-repeat,
+    linear-gradient(var(--b), var(--b)) bottom left / 1.5px var(--s) no-repeat;
+}
+/* diagonal stubs on the cut corners */
+.hud-panel::before,
+.hud-panel::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 1.5px;
+  background: rgb(127 232 255 / 0.95);
+  pointer-events: none;
+}
+.hud-panel::before {
+  top: 6.5px;
+  left: -3px;
+  transform: rotate(-45deg);
+}
+.hud-panel::after {
+  bottom: 6.5px;
+  right: -3px;
+  transform: rotate(-45deg);
+}
+
+/* ── Atmosphere: scanlines + visor vignette ─────────────────────────────── */
+.scanlines {
+  background: repeating-linear-gradient(0deg, rgb(127 232 255 / 0.035) 0 1px, transparent 1px 3px);
+  mix-blend-mode: screen;
+}
+.vignette {
+  background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgb(0 0 0 / 0.85) 100%);
+}
+
+/* ── Tiles (7 per row must fit a phone) ─────────────────────────────────── */
 .tile-size {
-  --tile: min(4rem, calc((100vw - 3.5rem) / 7));
-  width: var(--tile);
-  height: var(--tile);
+  width: min(4.25rem, calc((100vw - 3rem) / 7));
+  height: min(4.25rem, calc((100vw - 3rem) / 7));
 }
 .tile-col {
-  width: min(4rem, calc((100vw - 3.5rem) / 7));
+  width: min(4.25rem, calc((100vw - 3rem) / 7));
 }
 .tile-text {
-  font-size: clamp(8px, 2.35vw, 11px);
+  font-size: clamp(9px, 2.6vw, 12.5px);
 }
 .tile-name {
   font-size: clamp(7px, 1.9vw, 9px);
 }
+.tile {
+  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
+}
+.tile-correct {
+  background: linear-gradient(160deg, rgb(46 125 50 / 0.95), rgb(20 70 30 / 0.95));
+  box-shadow: inset 0 0 0 1px rgb(93 255 158 / 0.75), inset 0 0 18px rgb(93 255 158 / 0.25);
+}
+.tile-wrong {
+  background: linear-gradient(160deg, rgb(198 40 40 / 0.92), rgb(110 18 22 / 0.95));
+  box-shadow: inset 0 0 0 1px rgb(255 100 100 / 0.6), inset 0 0 18px rgb(255 100 100 / 0.18);
+}
+.tile-partial {
+  background: linear-gradient(160deg, rgb(230 140 20 / 0.95), rgb(140 75 5 / 0.95));
+  box-shadow: inset 0 0 0 1px rgb(255 200 110 / 0.85), inset 0 0 18px rgb(255 181 71 / 0.3);
+}
+.tile-neutral {
+  background: rgb(6 19 33 / 0.9);
+  box-shadow: inset 0 0 0 1px rgb(127 232 255 / 0.35);
+}
 
-.tile-face {
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
+/* ── Motion ─────────────────────────────────────────────────────────────── */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes sweep {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(100vh);
+  }
+}
+.spin-slow {
+  animation: spin-slow 90s linear infinite;
+}
+.spin-rev {
+  animation: spin-rev 140s linear infinite;
+}
+.spin-fast {
+  animation: spin-slow 12s linear infinite;
+}
+.caret {
+  animation: blink 1s steps(1) infinite;
+}
+.sweep {
+  animation: sweep 7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-slow,
+  .spin-rev,
+  .spin-fast,
+  .sweep {
+    animation: none;
+  }
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(127 232 255 / 0.3) transparent;
 }

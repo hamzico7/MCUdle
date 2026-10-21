@@ -3,7 +3,6 @@ export type Gender = "Male" | "Female" | "Other" | "N/A";
 export type Species =
   | "Human"
   | "Mutant"
-  | "Hybrid"
   | "Asgardian"
   | "Frost Giant"
   | "Kree"
@@ -40,6 +39,7 @@ export type Affiliation =
   | "Masters of the Mystic Arts"
   | "Asgard"
   | "Thunderbolts"
+  | "Red Room"
   | "Fantastic Four"
   | "Eternals"
   | "Hydra"
@@ -62,14 +62,15 @@ export interface Character {
   /** Portrait path or full URL. Falls back to an initials badge if the image is missing. */
   imageUrl: string;
   gender: Gender;
-  species: Species;
+  /** One or more. Partial (orange) when guess and answer share some but not all values. */
+  species: Species[];
   /** Status as of the current MCU (Oct 2026, before Avengers: Doomsday) */
   status: Status;
-  powerType: PowerType;
-  affiliation: Affiliation;
+  powerType: PowerType[];
+  affiliation: Affiliation[];
   debutPhase: Phase;
   /** First Marvel Studios project the character appeared in */
   debut: string;
 }
 
-export type TileResult = "correct" | "wrong" | "higher" | "lower";
+export type TileResult = "correct" | "partial" | "wrong" | "higher" | "lower";

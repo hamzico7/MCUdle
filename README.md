@@ -1,6 +1,6 @@
 # MCUDLE
 
-Daily MCU character guessing game. One secret character per day, same for everyone, resets at midnight Swiss time (CET/CEST). No server — runs entirely in the browser.
+Daily MCU character guessing game. One secret character per day, same for everyone, resets at midnight CET/CEST. No server — runs entirely in the browser.
 
 Built with Vite + React + TypeScript + Tailwind CSS + Framer Motion + Lucide icons.
 
@@ -87,26 +87,50 @@ git push
 
 ---
 
+## Updating to a new version zip
+
+1. Close the dev server (`Ctrl+C`).
+2. Unzip the new `mcudle.zip` and copy everything inside its `mcudle` folder over your existing `mcudle` folder (say **Replace** when Windows asks).
+3. In the VS Code terminal: `npm install` (new packages), then `npm run dev`.
+4. If it's already on GitHub: `git add .`, `git commit -m "Update"`, `git push` — Vercel redeploys by itself.
+
+---
+
 ## How it works
 
 | File | What it does |
 | --- | --- |
 | `src/data/characters.ts` | All 157 characters and their attributes |
-| `src/lib/daily.ts` | Picks today's character from the date in Swiss time (seeded shuffle — no repeats until everyone has been picked once) + countdown |
+| `src/lib/daily.ts` | Picks today's character from the date in CET/CEST (seeded shuffle — no repeats until everyone has been picked once) + countdown |
 | `src/lib/compare.ts` | Compares a guess to the answer (green / red / phase arrows) + share emojis |
 | `src/lib/storage.ts` | Saves today's guesses and your stats in `localStorage` |
-| `src/components/` | Header, SearchBar, GuessGrid, Tile, StatsModal, HowToPlayModal, CountdownModal, WinCard |
+| `src/components/` | Logo, Header, HudBackground, BootSequence, Panel, JarvisLine, SearchBar, GuessGrid, Tile, StatsModal, HowToPlayModal, CountdownModal, WinCard |
+| `src/index.css` | The Stark HUD design system (colors, fonts, panels, tiles, motion) |
 | `public/` | App icons, PWA manifest, `portraits/` folder |
 
-**Daily pick:** `Europe/Zurich` time zone handles CET (winter, UTC+1) and CEST (summer, UTC+2) automatically. The date (`2026-10-21`) decides the character, so everyone gets the same one without a backend.
+**Daily pick:** The `Europe/Berlin` time zone handles CET (winter, UTC+1) and CEST (summer, UTC+2) automatically. The date (`2026-10-21`) decides the character, so everyone gets the same one without a backend.
 
-## Adding portraits
+## Portraits
 
-Every character currently shows a colored initials badge. To add real pictures, save square images (≈256×256) to `public/portraits/` named after the character's `id`, e.g. `public/portraits/iron-man.jpg`. They appear automatically. You can also set `imageUrl` on a character to a full `https://` link. Use images you have the right to use (your own art, or properly licensed images).
+All 157 portraits are in `public/portraits/<id>.jpg` (256×256, from the infobox images on the MCU Fandom wiki — `portrait-sources.json` lists where each came from).
+
+To get one for a new character:
+
+```bash
+node scripts/fetch-portrait.mjs <character-id> "<Fandom page title>"
+# e.g.
+node scripts/fetch-portrait.mjs jean-grey "Jean Grey"
+```
+
+Or just drop any image in `public/portraits/` named after the id. No image = initials badge.
+
+## Partial matches (orange)
+
+Species, Power and Team can have more than one value, e.g. Bucky is `["Thunderbolts", "Avengers", "Hydra"]`. If your guess shares some values with the answer the tile turns orange; same values = green; nothing in common = red.
 
 ## Adding or editing characters
 
-Open `src/data/characters.ts` and copy a line. Use the exact values from the cheat sheet at the top of that file — a typo like `"human"` instead of `"Human"` will never match. Note: adding or removing characters changes the order of future daily picks (still the same for everyone, just a different sequence), so do it before you share the game widely, or accept the reshuffle.
+Open `src/data/characters.ts` and copy a line. Use the exact values from the cheat sheet at the top of that file — a typo like `"human"` instead of `"Human"` will never match. Species, powerType and affiliation are lists in square brackets. Note: adding or removing characters changes the order of future daily picks (still the same for everyone, just a different sequence), so do it before you share the game widely, or accept the reshuffle.
 
 **Data notes:** statuses are as of October 2026 (after Spider-Man: Brand New Day, Daredevil: Born Again S2 and Wonder Man; before Avengers: Doomsday on Dec 18, 2026). After Doomsday, update statuses. Characters who are missing or in limbo (Wanda, Sersi, Kingo, Kang, Red Skull, Monica Rambeau, Galactus, Silver Surfer, Bill Metzger) are `"Unknown"`. Ultron is `"Unknown"` because VisionQuest is still airing. Debut phase = first **Marvel Studios** appearance, so Daredevil is Phase 4 (No Way Home) and the Punisher is Phase 5 (Born Again).
 

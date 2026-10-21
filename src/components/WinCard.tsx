@@ -12,6 +12,27 @@ interface Props {
   delay: number; // wait for the tiles to finish flipping
 }
 
+/** Target-lock reticle that snaps onto the portrait. */
+function LockReticle() {
+  return (
+    <motion.svg
+      viewBox="-60 -60 120 120"
+      className="pointer-events-none absolute -inset-3 size-[calc(100%+1.5rem)]"
+      initial={{ scale: 1.6, opacity: 0, rotate: -45 }}
+      animate={{ scale: 1, opacity: 1, rotate: 0 }}
+      transition={{ type: "spring", stiffness: 200, damping: 16 }}
+    >
+      <g fill="none" stroke="var(--color-amber)" strokeWidth={2.5} style={{ filter: "drop-shadow(0 0 4px rgb(255 181 71 / 0.8))" }}>
+        <path d="M -56 -36 V -56 H -36" />
+        <path d="M 36 -56 H 56 V -36" />
+        <path d="M 56 36 V 56 H 36" />
+        <path d="M -36 56 H -56 V 36" />
+      </g>
+      <circle r={57} fill="none" stroke="var(--color-amber)" strokeOpacity={0.35} strokeDasharray="2 6" className="spin-fast" />
+    </motion.svg>
+  );
+}
+
 export default function WinCard({ answer, guessCount, shareText, delay }: Props) {
   const [copied, setCopied] = useState(false);
 
@@ -31,37 +52,46 @@ export default function WinCard({ answer, guessCount, shareText, delay }: Props)
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.4 }}
-      className="relative overflow-hidden rounded-2xl border border-hit/60 bg-gradient-to-br from-hit/25 via-panel to-panel p-4"
+      initial={{ opacity: 0, scale: 0.92, filter: "blur(6px)" }}
+      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+      transition={{ delay, duration: 0.45 }}
+      className="hud-panel"
+      style={{ borderColor: "rgb(255 181 71 / 0.45)" }}
     >
-      <div className="flex items-center gap-4">
-        <Portrait character={answer} size={72} rounded="rounded-xl" />
+      <span className="brackets" style={{ ["--b" as string]: "var(--color-amber)" }} />
+      <div className="flex items-center justify-between border-b border-amber/25 px-4 pt-2.5 pb-2">
+        <span className="label flex items-center gap-2 text-amber">
+          <span className="inline-block size-1.5 bg-amber" />
+          Identity confirmed
+        </span>
+        <span className="font-mono text-[11px] text-amber/80">{guessCount} {guessCount === 1 ? "SCAN" : "SCANS"}</span>
+      </div>
+
+      <div className="flex items-center gap-5 p-4 pl-6">
+        <div className="relative size-20 shrink-0">
+          <span className="tile block size-full overflow-hidden">
+            <Portrait character={answer} fill />
+          </span>
+          <LockReticle />
+        </div>
         <div className="min-w-0">
-          <div className="text-xs font-semibold tracking-widest text-green-300 uppercase">You got it</div>
-          <div className="truncate font-display text-2xl text-white">{answer.name}</div>
-          {answer.alias && <div className="truncate text-sm text-muted">{answer.alias}</div>}
-          <div className="mt-1 text-xs text-muted">First appeared in {answer.debut}</div>
+          <div className="truncate font-hud text-[17px] leading-tight tracking-wider text-white uppercase">{answer.name}</div>
+          {answer.alias && <div className="mt-1 truncate font-mono text-[12px] text-holo/70">{answer.alias}</div>}
+          <div className="mt-1.5 text-[13px] text-ice/70">First seen in {answer.debut}</div>
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
-        <div>
-          <div className="text-sm text-white">
-            Solved in <b>{guessCount}</b> {guessCount === 1 ? "guess" : "guesses"}
-          </div>
-          <div className="text-xs text-muted">
-            Next in <Countdown className="font-semibold text-gold" />
-          </div>
+      <div className="flex items-center justify-between gap-3 border-t border-amber/20 px-4 py-3">
+        <div className="font-mono text-[12px] text-holo/70">
+          NEXT TARGET <Countdown className="text-amber" />
         </div>
         <button
           type="button"
           onClick={share}
-          className="flex h-10 items-center gap-2 rounded-xl bg-gold px-4 font-bold text-night transition hover:brightness-110 active:scale-95"
+          className="tile flex h-10 items-center gap-2 bg-amber px-4 font-hud text-[10px] tracking-[0.2em] text-void transition hover:bg-white hover:shadow-[0_0_20px_rgb(255_181_71/0.6)] active:scale-95"
         >
-          {copied ? <Check size={18} /> : <Share2 size={18} />}
-          {copied ? "Copied" : "Share"}
+          {copied ? <Check size={15} /> : <Share2 size={15} />}
+          {copied ? "COPIED" : "SHARE"}
         </button>
       </div>
     </motion.section>

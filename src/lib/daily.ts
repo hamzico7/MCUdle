@@ -2,10 +2,10 @@ import { characters } from "../data/characters";
 import type { Character } from "../types";
 
 /**
- * The game resets at midnight Swiss/European time. "Europe/Zurich" follows CET in
- * winter (UTC+1) and CEST in summer (UTC+2) automatically, so DST is handled for us.
+ * The game resets at midnight Central European Time. "Europe/Berlin" follows CET in
+ * winter (UTC+1) and CEST in summer (UTC+2) automatically, so daylight saving is handled.
  */
-export const GAME_TIMEZONE = "Europe/Zurich";
+export const GAME_TIMEZONE = "Europe/Berlin";
 
 /** Changing this reshuffles the whole answer order for everyone. Leave it alone once live. */
 const SHUFFLE_SEED = "mcudle-v1";
@@ -13,7 +13,7 @@ const SHUFFLE_SEED = "mcudle-v1";
 /** Day 0 of the game. Only used to number the days. */
 const EPOCH = "2026-01-01";
 
-/** "YYYY-MM-DD" for the given moment, in Swiss time. */
+/** "YYYY-MM-DD" for the given moment, in CET/CEST. */
 export function dateKey(now: Date = new Date()): string {
   // en-CA formats dates as YYYY-MM-DD
   return new Intl.DateTimeFormat("en-CA", {
@@ -93,7 +93,7 @@ export function characterForDate(key: string): Character {
   return cycleOrder(cycle)[day % n];
 }
 
-/** Milliseconds until the next midnight in Swiss time. */
+/** Milliseconds until the next midnight CET/CEST. */
 export function msUntilReset(now: Date = new Date()): number {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: GAME_TIMEZONE,

@@ -13,6 +13,14 @@ export interface GuessFeedback {
 
 const same = (a: string, b: string): TileResult => (a === b ? "correct" : "wrong");
 
+/** Green = identical set, orange = at least one shared value, red = nothing shared. */
+function overlap(guess: readonly string[], answer: readonly string[]): TileResult {
+  const shared = guess.filter((v) => answer.includes(v)).length;
+  if (shared === 0) return "wrong";
+  if (shared === guess.length && shared === answer.length) return "correct";
+  return "partial";
+}
+
 export function compare(guess: Character, answer: Character): GuessFeedback {
   let debutPhase: TileResult = "correct";
   if (guess.debutPhase < answer.debutPhase) debutPhase = "higher";
@@ -20,10 +28,10 @@ export function compare(guess: Character, answer: Character): GuessFeedback {
 
   return {
     gender: same(guess.gender, answer.gender),
-    species: same(guess.species, answer.species),
+    species: overlap(guess.species, answer.species),
     status: same(guess.status, answer.status),
-    powerType: same(guess.powerType, answer.powerType),
-    affiliation: same(guess.affiliation, answer.affiliation),
+    powerType: overlap(guess.powerType, answer.powerType),
+    affiliation: overlap(guess.affiliation, answer.affiliation),
     debutPhase,
     isCorrect: guess.id === answer.id,
   };
@@ -31,7 +39,7 @@ export function compare(guess: Character, answer: Character): GuessFeedback {
 
 /** Emoji line for the share text, one per guess. */
 export function emojiRow(f: GuessFeedback): string {
-  const sq = (r: TileResult) => (r === "correct" ? "🟩" : "🟥");
+  const sq = (r: TileResult) => (r === "correct" ? "🟩" : r === "partial" ? "🟧" : "🟥");
   const phase = f.debutPhase === "correct" ? "🟩" : f.debutPhase === "higher" ? "⬆️" : "⬇️";
   return [f.gender, f.species, f.status, f.powerType, f.affiliation].map(sq).join("") + phase;
 }

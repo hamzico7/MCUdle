@@ -11,7 +11,7 @@ const STATS_KEY = "mcudle:stats";
 const SEEN_HELP_KEY = "mcudle:seenHelp";
 
 export interface DayState {
-  date: string; // YYYY-MM-DD (Swiss time)
+  date: string; // YYYY-MM-DD (CET/CEST)
   guesses: string[]; // character ids, oldest first
   won: boolean;
 }
@@ -66,7 +66,7 @@ export function saveDay(state: DayState) {
 
 /** Loads stats and drops the current streak if you missed a day. */
 export function loadStats(today: string): Stats {
-  const s = { ...emptyStats(), ...(read<Stats>(STATS_KEY) ?? {}) };
+  const s = { ...emptyStats(), ...read<Stats>(STATS_KEY) };
   s.distribution = { ...emptyStats().distribution, ...s.distribution };
   const yesterday = shiftKey(today, -1);
   if (s.lastWinDate !== today && s.lastWinDate !== yesterday) s.currentStreak = 0;

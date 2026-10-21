@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { formatCountdown, msUntilReset } from "../lib/daily";
 
-/** Live HH:MM:SS until the next midnight in Swiss time. */
+/** Live HH:MM:SS until the next daily reset (midnight CET/CEST). */
 export default function Countdown({ className = "" }: { className?: string }) {
   const [ms, setMs] = useState(() => msUntilReset());
   useEffect(() => {

@@ -1,14 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import BootSequence from "./components/BootSequence";
 import CountdownModal from "./components/CountdownModal";
 import GuessGrid from "./components/GuessGrid";
 import Header from "./components/Header";
 import HowToPlayModal from "./components/HowToPlayModal";
+import HudBackground from "./components/HudBackground";
+import JarvisLine from "./components/JarvisLine";
+import Panel from "./components/Panel";
 import SearchBar from "./components/SearchBar";
 import StatsModal from "./components/StatsModal";
 import { TILE_STAGGER } from "./components/Tile";
 import WinCard from "./components/WinCard";
 import { characterById, characters } from "./data/characters";
-import { compare, emojiRow } from "./lib/compare";
+import { compare, emojiRow, type GuessFeedback } from "./lib/compare";
 import { characterForDate, dateKey, dayNumber, shiftKey } from "./lib/daily";
 import {
   bucketFor,
@@ -28,18 +32,38 @@ const FLIP_TIME = 6 * TILE_STAGGER + 0.45;
 
 type ModalName = "help" | "stats" | "countdown" | null;
 
+/** What J.A.R.V.I.S. says about the latest guess. */
+function jarvisReport(name: string, f: GuessFeedback): { text: string; tone: "holo" | "amber" } {
+  const results = [f.gender, f.species, f.status, f.powerType, f.affiliation, f.debutPhase];
+  const hits = results.filter((r) => r === "correct").length;
+  const partials = results.filter((r) => r === "partial").length;
+  const phase =
+    f.debutPhase === "higher" ? " Target debuted later." : f.debutPhase === "lower" ? " Target debuted earlier." : " Debut phase confirmed.";
+  const partialTxt = partials ? `, ${partials} partial` : "";
+  if (hits >= 4) return { text: `${name}: ${hits}/6 match${partialTxt}. Very close, sir.${phase}`, tone: "amber" };
+  if (hits === 0 && partials === 0) return { text: `${name}: no matching readings. Try a different angle.${phase}`, tone: "holo" };
+  return { text: `${name}: ${hits}/6 match${partialTxt}.${phase}`, tone: "holo" };
+}
+
 export default function App() {
   const [today, setToday] = useState(() => dateKey());
   const [day, setDay] = useState<DayState>(() => loadDay(today));
   const [stats, setStats] = useState<Stats>(() => loadStats(today));
   const [newestId, setNewestId] = useState<string | null>(null);
-  const [modal, setModal] = useState<ModalName>(() => (hasSeenHelp() ? null : "help"));
+  const [modal, setModal] = useState<ModalName>(null);
 
   const answer = useMemo(() => characterForDate(today), [today]);
   const yesterday = useMemo(() => characterForDate(shiftKey(today, -1)), [today]);
   const guessed = useMemo(() => new Set(day.guesses), [day.guesses]);
 
-  // Midnight (Swiss time) rollover while the tab is open
+  // first visit: open the briefing after the boot sequence
+  useEffect(() => {
+    if (hasSeenHelp()) return;
+    const t = setTimeout(() => setModal("help"), 1900);
+    return () => clearTimeout(t);
+  }, []);
+
+  // midnight (CET/CEST) rollover while the tab is open
   useEffect(() => {
     const t = setInterval(() => {
       const k = dateKey();
@@ -64,7 +88,7 @@ export default function App() {
       if (day.guesses.length === 0) s = recordPlayed(s);
       if (won) {
         s = recordWin(s, today, guesses.length);
-        setTimeout(() => setModal("stats"), (FLIP_TIME + 1.2) * 1000);
+        setTimeout(() => setModal("stats"), (FLIP_TIME + 1.6) * 1000);
       }
       setStats(s);
       setDay(next);
@@ -79,6 +103,14 @@ export default function App() {
     setModal(null);
   }, [modal]);
 
+  const jarvis = useMemo(() => {
+    if (day.won) return { text: `Identity confirmed: ${answer.name}. Well done, sir.`, tone: "hit" as const };
+    const last = day.guesses.at(-1);
+    if (!last) return { text: "Daily target acquired. Awaiting your first identification, sir.", tone: "holo" as const };
+    const g = characterById.get(last)!;
+    return jarvisReport(g.name, compare(g, answer));
+  }, [day, answer]);
+
   const shareText = useMemo(() => {
     const rows = day.guesses.map((id) => emojiRow(compare(characterById.get(id)!, answer)));
     const shown = rows.length > 8 ? [...rows.slice(0, 7), `…+${rows.length - 7} more`] : rows;
@@ -87,55 +119,44 @@ export default function App() {
   }, [day.guesses, answer, today]);
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-      <Header onHelp={() => setModal("help")} onCountdown={() => setModal("countdown")} onStats={() => setModal("stats")} />
+    <>
+      <HudBackground />
+      <BootSequence count={characters.length} />
 
-      <main className="flex flex-1 flex-col gap-4">
-        <div className="rounded-2xl border border-line bg-panel/80 p-4 backdrop-blur">
-          <p className="mb-3 text-center text-sm text-muted">
-            Guess today's <span className="font-semibold text-white">MCU character</span>
-            {day.guesses.length > 0 && !day.won && (
-              <>
-                {" · "}
-                <span className="text-white">{day.guesses.length}</span> {day.guesses.length === 1 ? "guess" : "guesses"}
-              </>
-            )}
-          </p>
-          <SearchBar guessed={guessed} disabled={day.won} onGuess={onGuess} />
+      <div className="mx-auto flex min-h-dvh max-w-[34rem] flex-col px-3 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-4">
+        <Header onHelp={() => setModal("help")} onCountdown={() => setModal("countdown")} onStats={() => setModal("stats")} />
+
+        {/* status strip: real data only */}
+        <div className="mb-3 flex items-center justify-between gap-2 border-y border-holo/15 px-1 py-1.5 font-mono text-[10.5px] text-holo/70">
+          <span>DAY {String(dayNumber(today)).padStart(3, "0")}</span>
+          <span className="hidden sm:inline">{today}</span>
+          <span>SCANS {String(day.guesses.length).padStart(2, "0")}</span>
+          <span className={stats.currentStreak ? "text-amber" : ""}>STREAK {String(stats.currentStreak).padStart(2, "0")}</span>
         </div>
 
-        {day.won && (
-          <WinCard
-            answer={answer}
-            guessCount={day.guesses.length}
-            shareText={shareText}
-            delay={newestId ? FLIP_TIME : 0}
-          />
-        )}
+        <main className="flex flex-1 flex-col gap-4">
+          <Panel label="Target identification" right={`${characters.length} PROFILES`} className="z-20">
+            <SearchBar guessed={guessed} disabled={day.won} onGuess={onGuess} />
+            <div className="mt-3">
+              <JarvisLine key={jarvis.text} text={jarvis.text} tone={jarvis.tone} />
+            </div>
+          </Panel>
 
-        <GuessGrid guesses={day.guesses} answer={answer} newestId={newestId} />
+          {day.won && (
+            <WinCard answer={answer} guessCount={day.guesses.length} shareText={shareText} delay={newestId ? FLIP_TIME : 0} />
+          )}
 
-        {day.guesses.length === 0 && (
-          <p className="mt-6 text-center text-sm text-muted">
-            Start with anyone — the tiles will tell you what matches.
-          </p>
-        )}
-      </main>
+          <GuessGrid guesses={day.guesses} answer={answer} newestId={newestId} />
+        </main>
 
-      <footer className="mt-10 text-center text-[11px] leading-relaxed text-muted/70">
-        MCUDLE #{dayNumber(today)} · {characters.length} characters
-        <br />
-        Fan-made game. Not affiliated with or endorsed by Marvel or Disney.
-      </footer>
+        <footer className="mt-10 text-center font-mono text-[10px] leading-relaxed text-holo/40">
+          MCUDLE // FAN-MADE // NOT AFFILIATED WITH MARVEL OR DISNEY
+        </footer>
+      </div>
 
-      <HowToPlayModal open={modal === "help"} onClose={closeModal} total={characters.length} />
-      <StatsModal
-        open={modal === "stats"}
-        onClose={closeModal}
-        stats={stats}
-        todayBucket={day.won ? bucketFor(day.guesses.length) : null}
-      />
+      <HowToPlayModal open={modal === "help"} onClose={closeModal} />
+      <StatsModal open={modal === "stats"} onClose={closeModal} stats={stats} todayBucket={day.won ? bucketFor(day.guesses.length) : null} />
       <CountdownModal open={modal === "countdown"} onClose={closeModal} yesterday={yesterday} />
-    </div>
+    </>
   );
 }

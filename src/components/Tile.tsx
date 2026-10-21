@@ -1,43 +1,44 @@
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ChevronsDown, ChevronsUp } from "lucide-react";
 import type { TileResult } from "../types";
 
 interface Props {
   result?: TileResult; // undefined = neutral (portrait tile)
   children: React.ReactNode;
   index: number; // column, for the stagger
-  animate: boolean; // only the newest row flips
+  animate: boolean; // only the newest row flips in
   label: string; // for screen readers
   bare?: boolean; // render children edge-to-edge (portrait tile)
 }
 
-const COLORS: Record<TileResult, string> = {
-  correct: "bg-hit border-green-400/40",
-  wrong: "bg-miss border-red-400/30",
-  higher: "bg-miss border-red-400/30",
-  lower: "bg-miss border-red-400/30",
+const CLASS: Record<TileResult, string> = {
+  correct: "tile-correct",
+  partial: "tile-partial",
+  wrong: "tile-wrong",
+  higher: "tile-wrong",
+  lower: "tile-wrong",
 };
 
-export const TILE_STAGGER = 0.28;
+export const TILE_STAGGER = 0.26;
 
 export default function Tile({ result, children, index, animate, label, bare }: Props) {
-  const color = result ? COLORS[result] : "bg-panel-2 border-line";
-
   return (
     <motion.div
       aria-label={label}
-      initial={animate ? { rotateX: -90, opacity: 0 } : false}
-      animate={{ rotateX: 0, opacity: 1 }}
-      transition={{ delay: animate ? index * TILE_STAGGER : 0, duration: 0.42, ease: [0.2, 0.7, 0.3, 1] }}
+      initial={animate ? { rotateX: -90, opacity: 0, scale: 1.15, filter: "blur(6px) brightness(2)" } : false}
+      animate={{ rotateX: 0, opacity: 1, scale: 1, filter: "blur(0px) brightness(1)" }}
+      transition={{ delay: animate ? index * TILE_STAGGER : 0, duration: 0.45, ease: [0.2, 0.7, 0.3, 1] }}
       style={{ transformPerspective: 600 }}
-      className={`tile-face tile-size tile-text relative grid shrink-0 place-items-center overflow-hidden rounded-lg border text-center font-semibold leading-tight text-white shadow-[inset_0_-3px_0_rgb(0_0_0/0.25)] sm:rounded-xl ${bare ? "p-0" : "p-0.5"} ${color}`}
+      className={`tile tile-size tile-text relative grid shrink-0 place-items-center overflow-hidden text-center leading-[1.05] font-bold tracking-wide text-white uppercase ${
+        bare ? "p-0" : "p-1"
+      } ${result ? CLASS[result] : "tile-neutral"}`}
     >
       {(result === "higher" || result === "lower") && (
-        <span aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center text-white/20">
+        <span aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center text-white/15">
           {result === "higher" ? (
-            <ArrowUp className="size-[85%]" strokeWidth={3} />
+            <ChevronsUp className="size-[95%]" strokeWidth={2.5} />
           ) : (
-            <ArrowDown className="size-[85%]" strokeWidth={3} />
+            <ChevronsDown className="size-[95%]" strokeWidth={2.5} />
           )}
         </span>
       )}
