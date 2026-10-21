@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Archivo Black", "Arial Black", system-ui, sans-serif;
+  --font-sans: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-night: #0b0e1a;
+  --color-panel: #141a2e;
+  --color-panel-2: #1b2340;
+  --color-line: #29345a;
+  --color-muted: #8f9bc2;
+  --color-gold: #f5b301;
+  --color-hit: #2e7d32;
+  --color-miss: #c62828;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-night);
+  background-image:
+    radial-gradient(60rem 30rem at 50% -10rem, rgb(245 179 1 / 0.10), transparent 70%),
+    linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
+  background-size: auto, 32px 32px, 32px 32px;
+  color: #e8ecf8;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* thin, dark scrollbars for the guess grid + dropdown */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+/* 7 tiles + 6 gaps (4px) must fit a phone screen; caps at 64px on bigger screens */
+.tile-size {
+  --tile: min(4rem, calc((100vw - 3.5rem) / 7));
+  width: var(--tile);
+  height: var(--tile);
+}
+.tile-col {
+  width: min(4rem, calc((100vw - 3.5rem) / 7));
+}
+.tile-text {
+  font-size: clamp(8px, 2.35vw, 11px);
+}
+.tile-name {
+  font-size: clamp(7px, 1.9vw, 9px);
+}
+
+.tile-face {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
