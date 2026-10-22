@@ -5,6 +5,7 @@ import { useRoute } from "./lib/route";
 import ClassicGame from "./modes/ClassicGame";
 import EndlessGame from "./modes/EndlessGame";
 import Home from "./modes/Home";
+import QuoteGame from "./modes/QuoteGame";
 
 export default function App() {
   const [route, go] = useRoute();
@@ -17,6 +18,8 @@ export default function App() {
         <ClassicGame onHome={() => go("home")} />
       ) : route === "endless" ? (
         <EndlessGame onHome={() => go("home")} />
+      ) : route === "quote" ? (
+        <QuoteGame onHome={() => go("home")} />
       ) : (
         <Home onOpen={go} />
       )}

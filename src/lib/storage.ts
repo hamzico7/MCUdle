@@ -6,9 +6,15 @@ import { shiftKey } from "./daily";
   storage can throw — the game still works, it just won't remember.
 */
 
-const DAY_KEY = "mcudle:day";
-const STATS_KEY = "mcudle:stats";
 const SEEN_HELP_KEY = "mcudle:seenHelp";
+
+/**
+ * Daily modes each get their own save slots. Classic uses "" (keys mcudle:day / mcudle:stats,
+ * unchanged so nobody loses progress); Quote uses "quote" (mcudle:quote:day / mcudle:quote:stats).
+ */
+export type DailyMode = "" | "quote";
+const dayKey = (mode: DailyMode) => (mode ? `mcudle:${mode}:day` : "mcudle:day");
+const statsKey = (mode: DailyMode) => (mode ? `mcudle:${mode}:stats` : "mcudle:stats");
 
 export interface DayState {
   date: string; // YYYY-MM-DD (CET/CEST)
@@ -55,19 +61,19 @@ function write(key: string, value: unknown) {
   }
 }
 
-export function loadDay(today: string): DayState {
-  const saved = read<DayState>(DAY_KEY);
+export function loadDay(today: string, mode: DailyMode = ""): DayState {
+  const saved = read<DayState>(dayKey(mode));
   if (saved && saved.date === today && Array.isArray(saved.guesses)) return saved;
   return { date: today, guesses: [], won: false };
 }
 
-export function saveDay(state: DayState) {
-  write(DAY_KEY, state);
+export function saveDay(state: DayState, mode: DailyMode = "") {
+  write(dayKey(mode), state);
 }
 
 /** Loads stats and drops the current streak if you missed a day. */
-export function loadStats(today: string): Stats {
-  const s = { ...emptyStats(), ...read<Stats>(STATS_KEY) };
+export function loadStats(today: string, mode: DailyMode = ""): Stats {
+  const s = { ...emptyStats(), ...read<Stats>(statsKey(mode)) };
   s.distribution = { ...emptyStats().distribution, ...s.distribution };
   const yesterday = shiftKey(today, -1);
   if (s.lastWinDate !== today && s.lastWinDate !== yesterday) s.currentStreak = 0;
@@ -79,14 +85,14 @@ export function bucketFor(guessCount: number): Bucket {
 }
 
 /** Call once on the first guess of a day. */
-export function recordPlayed(stats: Stats): Stats {
+export function recordPlayed(stats: Stats, mode: DailyMode = ""): Stats {
   const next = { ...stats, played: stats.played + 1 };
-  write(STATS_KEY, next);
+  write(statsKey(mode), next);
   return next;
 }
 
 /** Call once when the day is won. */
-export function recordWin(stats: Stats, today: string, guessCount: number): Stats {
+export function recordWin(stats: Stats, today: string, guessCount: number, mode: DailyMode = ""): Stats {
   const yesterday = shiftKey(today, -1);
   const streak = stats.lastWinDate === yesterday ? stats.currentStreak + 1 : 1;
   const bucket = bucketFor(guessCount);
@@ -98,21 +104,22 @@ export function recordWin(stats: Stats, today: string, guessCount: number): Stat
     distribution: { ...stats.distribution, [bucket]: stats.distribution[bucket] + 1 },
     lastWinDate: today,
   };
-  write(STATS_KEY, next);
+  write(statsKey(mode), next);
   return next;
 }
 
 /** Giving up breaks the daily streak (tomorrow's win starts again at 1). */
-export function recordGiveUp(stats: Stats): Stats {
+export function recordGiveUp(stats: Stats, mode: DailyMode = ""): Stats {
   const next: Stats = { ...stats, currentStreak: 0, lastWinDate: null };
-  write(STATS_KEY, next);
+  write(statsKey(mode), next);
   return next;
 }
 
-export function hasSeenHelp(): boolean {
-  return read<boolean>(SEEN_HELP_KEY) === true;
+/** Each mode has its own rules, so its briefing shows once per mode ("" = Classic/Endless). */
+export function hasSeenHelp(mode: DailyMode = ""): boolean {
+  return read<boolean>(mode ? `${SEEN_HELP_KEY}:${mode}` : SEEN_HELP_KEY) === true;
 }
 
-export function markHelpSeen() {
-  write(SEEN_HELP_KEY, true);
+export function markHelpSeen(mode: DailyMode = "") {
+  write(mode ? `${SEEN_HELP_KEY}:${mode}` : SEEN_HELP_KEY, true);
 }

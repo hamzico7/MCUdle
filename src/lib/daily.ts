@@ -114,3 +114,20 @@ export function formatCountdown(ms: number): string {
   const ss = String(s % 60).padStart(2, "0");
   return `${hh}:${mm}:${ss}`;
 }
+
+/**
+ * Same no-repeat daily shuffle for any other list (e.g. quotes), with its own seed so it
+ * doesn't line up with the character order. Items need a stable unique id.
+ */
+export function dailyItem<T extends { id: string }>(items: readonly T[], key: string, seed: string): T {
+  const n = items.length;
+  const day = Math.max(0, daysBetween(EPOCH, key));
+  const cycle = Math.floor(day / n);
+  const sorted = [...items].sort((a, b) => a.id.localeCompare(b.id));
+  const rand = rng(hash(`${seed}:${cycle}`));
+  for (let i = sorted.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
+  }
+  return sorted[day % n];
+}

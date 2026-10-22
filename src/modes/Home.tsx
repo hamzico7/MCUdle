@@ -6,7 +6,7 @@ import Logo from "../components/Logo";
 import { characters } from "../data/characters";
 import { dateKey, dayNumber } from "../lib/daily";
 import { loadEndless } from "../lib/endless";
-import { loadDay, loadStats } from "../lib/storage";
+import { loadDay, loadStats, type DayState } from "../lib/storage";
 import type { Route } from "../lib/route";
 
 interface Mode {
@@ -65,19 +65,23 @@ export default function Home({ onOpen }: { onOpen: (r: Route) => void }) {
   const day = loadDay(today);
   const stats = loadStats(today);
 
-  const classicStatus = day.won ? (
-    <span className="text-hit-glow">
-      SOLVED IN {day.guesses.length} · NEXT IN <Countdown />
-    </span>
-  ) : day.gaveUp ? (
-    <span className="text-amber">
-      REVEALED · NEXT IN <Countdown />
-    </span>
-  ) : day.guesses.length ? (
-    <span className="text-amber">IN PROGRESS · {day.guesses.length} {day.guesses.length === 1 ? "SCAN" : "SCANS"}</span>
-  ) : (
-    <span>NEW TARGET AVAILABLE · DAY {dayNumber(today)}</span>
-  );
+  /** Status line for a daily mode card (Classic, Quote). */
+  const dailyStatus = (d: DayState, fresh: string) =>
+    d.won ? (
+      <span className="text-hit-glow">
+        SOLVED IN {d.guesses.length} · NEXT IN <Countdown />
+      </span>
+    ) : d.gaveUp ? (
+      <span className="text-amber">
+        REVEALED · NEXT IN <Countdown />
+      </span>
+    ) : d.guesses.length ? (
+      <span className="text-amber">IN PROGRESS · {d.guesses.length} {d.guesses.length === 1 ? "SCAN" : "SCANS"}</span>
+    ) : (
+      <span>{fresh}</span>
+    );
+  const classicStatus = dailyStatus(day, `NEW TARGET AVAILABLE · DAY ${dayNumber(today)}`);
+  const quoteStatus = dailyStatus(loadDay(today, "quote"), `NEW QUOTE AVAILABLE · #${dayNumber(today)}`);
 
   const endless = loadEndless();
   const endlessStatus = endless.solved || endless.guesses.length ? (
@@ -91,7 +95,7 @@ export default function Home({ onOpen }: { onOpen: (r: Route) => void }) {
   const modes: Mode[] = [
     { id: "classic", route: "classic", title: "Classic", blurb: "Guess today's MCU character.", icon: <ScanFace size={26} strokeWidth={1.6} />, status: classicStatus },
     { id: "endless", route: "endless", title: "Endless", blurb: "Unlimited rounds, a new character every time.", icon: <InfinityIcon size={26} strokeWidth={1.6} />, status: endlessStatus },
-    { id: "quote", title: "Quote", blurb: "Who said it? A new MCU quote every day.", icon: <MessageSquareQuote size={26} strokeWidth={1.6} /> },
+    { id: "quote", route: "quote", title: "Quote", blurb: "Who said it? A new MCU quote every day.", icon: <MessageSquareQuote size={26} strokeWidth={1.6} />, status: quoteStatus },
     { id: "emoji", title: "Emoji", blurb: "Guess the character from emojis.", icon: <Smile size={26} strokeWidth={1.6} /> },
   ];
 

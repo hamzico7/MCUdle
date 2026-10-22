@@ -12,6 +12,8 @@ interface Props {
   title?: string; // header text, default "Identity confirmed"
   footer?: React.ReactNode; // replaces the countdown + share bar (Endless mode)
   reticle?: boolean; // target-lock animation (off when the answer was only revealed)
+  detail?: string; // line under the name, default "First seen in <debut>"
+  nextLabel?: string; // countdown label, default "NEXT TARGET"
   delay: number; // wait for the tiles to finish flipping
   nextLive?: boolean; // midnight already passed, the next target is out
 }
@@ -37,7 +39,7 @@ function LockReticle() {
   );
 }
 
-export default function WinCard({ answer, guessCount, shareText = "", title = "Identity confirmed", footer, reticle = true, delay, nextLive }: Props) {
+export default function WinCard({ answer, guessCount, shareText = "", title = "Identity confirmed", footer, reticle = true, detail, nextLabel = "NEXT TARGET", delay, nextLive }: Props) {
   const [copied, setCopied] = useState(false);
 
   const share = async () => {
@@ -81,7 +83,7 @@ export default function WinCard({ answer, guessCount, shareText = "", title = "I
         <div className="min-w-0">
           <div className="line-clamp-2 font-hud text-[15px] leading-snug tracking-wider break-words text-white uppercase sm:text-[17px]">{answer.name}</div>
           {answer.alias && <div className="mt-1 truncate font-mono text-[12px] text-holo/70">{answer.alias}</div>}
-          <div className="mt-1.5 text-[13px] text-ice/70">First seen in {answer.debut}</div>
+          <div className="mt-1.5 text-[13px] text-ice/70">{detail ?? `First seen in ${answer.debut}`}</div>
         </div>
       </div>
 
@@ -89,7 +91,7 @@ export default function WinCard({ answer, guessCount, shareText = "", title = "I
         {footer ?? (
           <>
             <div className="font-mono text-[12px] text-holo/70">
-              {nextLive ? <span className="text-amber">NEXT TARGET LIVE</span> : <>NEXT TARGET <Countdown className="text-amber" /></>}
+              {nextLive ? <span className="text-amber">{nextLabel} LIVE</span> : <>{nextLabel} <Countdown className="text-amber" /></>}
             </div>
             <button
               type="button"
