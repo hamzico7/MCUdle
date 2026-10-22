@@ -82,7 +82,7 @@ export default function Home({ onOpen }: { onOpen: (r: Route) => void }) {
   const endless = loadEndless();
   const endlessStatus = endless.solved || endless.guesses.length ? (
     <span>
-      ROUND {endless.round} · <span className={endless.streak ? "text-amber" : ""}>STREAK {endless.streak}</span> · BEST {endless.bestStreak}
+      <span className={endless.streak ? "text-amber" : ""}>STREAK {endless.streak}</span> · BEST {endless.bestStreak}
     </span>
   ) : (
     <span>UNLIMITED ROUNDS · NO WAITING</span>

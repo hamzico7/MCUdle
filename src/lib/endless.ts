@@ -8,16 +8,13 @@ import { characterForDate, dateKey } from "./daily";
 
 const KEY = "mcudle:endless";
 
-/** How many recent answers are kept out of the draw, so they don't repeat too soon. */
-const NO_REPEAT = 30;
-
 export interface EndlessState {
   round: number; // 1 = first round ever played
   answerId: string;
   guesses: string[]; // character ids, oldest first
   won: boolean;
   gaveUp: boolean;
-  recent: string[]; // last answers, newest last
+  recent: string[]; // answers already used in the current streak (no repeats until the streak ends)
   solved: number; // rounds won
   totalGuesses: number; // guesses across all won rounds (for the average)
   streak: number; // rounds won in a row without giving up
@@ -25,9 +22,9 @@ export interface EndlessState {
   newBest?: boolean; // this round's win set a new best streak
 }
 
-/** Random character that isn't a recent answer and isn't today's daily (no spoilers). */
+/** Random character not used yet in this streak, and never today's daily (no spoilers). */
 function pick(recent: string[]): string {
-  const blocked = new Set([...recent.slice(-NO_REPEAT), characterForDate(dateKey()).id]);
+  const blocked = new Set([...recent, characterForDate(dateKey()).id]);
   const pool = characters.filter((c) => !blocked.has(c.id));
   const from = pool.length ? pool : characters;
   return from[Math.floor(Math.random() * from.length)].id;
@@ -84,7 +81,10 @@ export function giveUpEndless(s: EndlessState): EndlessState {
 }
 
 export function nextRound(s: EndlessState): EndlessState {
-  const recent = [...s.recent, s.answerId].slice(-NO_REPEAT);
+  // Streak ended (gave up): everyone is back in the draw. Streak goes on: this answer is out.
+  // Once every character has been used in one streak, the list starts over.
+  let recent = s.gaveUp ? [] : [...s.recent, s.answerId];
+  if (characters.every((c) => recent.includes(c.id) || c.id === characterForDate(dateKey()).id)) recent = [];
   return { ...s, round: s.round + 1, answerId: pick(recent), guesses: [], won: false, gaveUp: false, newBest: false, recent };
 }
 
