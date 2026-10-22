@@ -8,7 +8,10 @@ import Portrait from "./Portrait";
 interface Props {
   answer: Character;
   guessCount: number;
-  shareText: string;
+  shareText?: string;
+  title?: string; // header text, default "Identity confirmed"
+  footer?: React.ReactNode; // replaces the countdown + share bar (Endless mode)
+  reticle?: boolean; // target-lock animation (off when the answer was only revealed)
   delay: number; // wait for the tiles to finish flipping
   nextLive?: boolean; // midnight already passed, the next target is out
 }
@@ -34,7 +37,7 @@ function LockReticle() {
   );
 }
 
-export default function WinCard({ answer, guessCount, shareText, delay, nextLive }: Props) {
+export default function WinCard({ answer, guessCount, shareText = "", title = "Identity confirmed", footer, reticle = true, delay, nextLive }: Props) {
   const [copied, setCopied] = useState(false);
 
   const share = async () => {
@@ -63,7 +66,7 @@ export default function WinCard({ answer, guessCount, shareText, delay, nextLive
       <div className="flex items-center justify-between border-b border-amber/25 px-4 pt-2.5 pb-2">
         <span className="label flex items-center gap-2 text-amber">
           <span className="inline-block size-1.5 bg-amber" />
-          Identity confirmed
+          {title}
         </span>
         <span className="font-mono text-[11px] text-amber/80">{guessCount} {guessCount === 1 ? "SCAN" : "SCANS"}</span>
       </div>
@@ -73,27 +76,31 @@ export default function WinCard({ answer, guessCount, shareText, delay, nextLive
           <span className="tile block size-full overflow-hidden">
             <Portrait character={answer} fill />
           </span>
-          <LockReticle />
+          {reticle && <LockReticle />}
         </div>
         <div className="min-w-0">
-          <div className="truncate font-hud text-[17px] leading-tight tracking-wider text-white uppercase">{answer.name}</div>
+          <div className="line-clamp-2 font-hud text-[15px] leading-snug tracking-wider break-words text-white uppercase sm:text-[17px]">{answer.name}</div>
           {answer.alias && <div className="mt-1 truncate font-mono text-[12px] text-holo/70">{answer.alias}</div>}
           <div className="mt-1.5 text-[13px] text-ice/70">First seen in {answer.debut}</div>
         </div>
       </div>
 
       <div className="flex items-center justify-between gap-3 border-t border-amber/20 px-4 py-3">
-        <div className="font-mono text-[12px] text-holo/70">
-          {nextLive ? <span className="text-amber">NEXT TARGET LIVE</span> : <>NEXT TARGET <Countdown className="text-amber" /></>}
-        </div>
-        <button
-          type="button"
-          onClick={share}
-          className="tile flex h-10 items-center gap-2 bg-amber px-4 font-hud text-[10px] tracking-[0.2em] text-void transition hover:bg-white hover:shadow-[0_0_20px_rgb(255_181_71/0.6)] active:scale-95"
-        >
-          {copied ? <Check size={15} /> : <Share2 size={15} />}
-          {copied ? "COPIED" : "SHARE"}
-        </button>
+        {footer ?? (
+          <>
+            <div className="font-mono text-[12px] text-holo/70">
+              {nextLive ? <span className="text-amber">NEXT TARGET LIVE</span> : <>NEXT TARGET <Countdown className="text-amber" /></>}
+            </div>
+            <button
+              type="button"
+              onClick={share}
+              className="tile flex h-10 items-center gap-2 bg-amber px-4 font-hud text-[10px] tracking-[0.2em] text-void transition hover:bg-white hover:shadow-[0_0_20px_rgb(255_181_71/0.6)] active:scale-95"
+            >
+              {copied ? <Check size={15} /> : <Share2 size={15} />}
+              {copied ? "COPIED" : "SHARE"}
+            </button>
+          </>
+        )}
       </div>
     </motion.section>
   );

@@ -14,10 +14,11 @@ const norm = (s: string) =>
 interface Props {
   guessed: Set<string>;
   disabled: boolean;
+  disabledText?: string; // placeholder once the round is over
   onGuess: (id: string) => void;
 }
 
-export default function SearchBar({ guessed, disabled, onGuess }: Props) {
+export default function SearchBar({ guessed, disabled, disabledText = "Target identified", onGuess }: Props) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -96,7 +97,7 @@ export default function SearchBar({ guessed, disabled, onGuess }: Props) {
             spellCheck={false}
             disabled={disabled}
             value={query}
-            placeholder={disabled ? "Target identified" : "Identify subject…"}
+            placeholder={disabled ? disabledText : "Identify subject…"}
             onChange={(e) => {
               setQuery(e.target.value);
               setActive(0);

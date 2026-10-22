@@ -3,6 +3,7 @@ import HudBackground from "./components/HudBackground";
 import { characters } from "./data/characters";
 import { useRoute } from "./lib/route";
 import ClassicGame from "./modes/ClassicGame";
+import EndlessGame from "./modes/EndlessGame";
 import Home from "./modes/Home";
 
 export default function App() {
@@ -12,7 +13,13 @@ export default function App() {
     <>
       <HudBackground />
       <BootSequence count={characters.length} />
-      {route === "classic" ? <ClassicGame onHome={() => go("home")} /> : <Home onOpen={go} />}
+      {route === "classic" ? (
+        <ClassicGame onHome={() => go("home")} />
+      ) : route === "endless" ? (
+        <EndlessGame onHome={() => go("home")} />
+      ) : (
+        <Home onOpen={go} />
+      )}
     </>
   );
 }

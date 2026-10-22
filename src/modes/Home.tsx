@@ -5,6 +5,7 @@ import JarvisLine from "../components/JarvisLine";
 import Logo from "../components/Logo";
 import { characters } from "../data/characters";
 import { dateKey, dayNumber } from "../lib/daily";
+import { loadEndless } from "../lib/endless";
 import { loadDay, loadStats } from "../lib/storage";
 import type { Route } from "../lib/route";
 
@@ -74,9 +75,18 @@ export default function Home({ onOpen }: { onOpen: (r: Route) => void }) {
     <span>NEW TARGET AVAILABLE · DAY {dayNumber(today)}</span>
   );
 
+  const endless = loadEndless();
+  const endlessStatus = endless.solved || endless.guesses.length ? (
+    <span>
+      ROUND {endless.round} · <span className={endless.streak ? "text-amber" : ""}>STREAK {endless.streak}</span> · BEST {endless.bestStreak}
+    </span>
+  ) : (
+    <span>UNLIMITED ROUNDS · NO WAITING</span>
+  );
+
   const modes: Mode[] = [
     { id: "classic", route: "classic", title: "Classic", blurb: "Guess today's MCU character.", icon: <ScanFace size={26} strokeWidth={1.6} />, status: classicStatus },
-    { id: "endless", title: "Endless", blurb: "Unlimited rounds, a new character every time.", icon: <InfinityIcon size={26} strokeWidth={1.6} /> },
+    { id: "endless", route: "endless", title: "Endless", blurb: "Unlimited rounds, a new character every time.", icon: <InfinityIcon size={26} strokeWidth={1.6} />, status: endlessStatus },
     { id: "quote", title: "Quote", blurb: "Who said it? A new MCU quote every day.", icon: <MessageSquareQuote size={26} strokeWidth={1.6} /> },
     { id: "emoji", title: "Emoji", blurb: "Guess the character from emojis.", icon: <Smile size={26} strokeWidth={1.6} /> },
   ];

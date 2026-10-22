@@ -8,19 +8,20 @@ const Swatch = ({ className, children }: { className: string; children?: React.R
 const COLUMNS: [string, string][] = [
   ["Gender", "The character's gender."],
   ["Species", "What they are, by birth or by origin."],
-  ["Status", "Alive, dead or unknown, as of the latest MCU release."],
+  ["Status", "Alive or dead, as of the latest MCU release."],
   ["Power", "Where their abilities come from."],
   ["Team", "The group or faction they belong to."],
   ["Debut", "The MCU phase of their first Marvel Studios appearance."],
 ];
 
-export default function HowToPlayModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+export default function HowToPlayModal({ open, onClose, mode = "daily" }: { open: boolean; onClose: () => void; mode?: "daily" | "endless" }) {
+  const endless = mode === "endless";
   return (
-    <Modal open={open} title="Briefing" code="PROTOCOL // DAILY IDENTIFICATION" onClose={onClose}>
+    <Modal open={open} title="Briefing" code={endless ? "PROTOCOL // ENDLESS IDENTIFICATION" : "PROTOCOL // DAILY IDENTIFICATION"} onClose={onClose}>
       <div className="flex flex-col gap-5 text-[15px] leading-snug text-ice/85">
         <p className="m-0">
-          Identify today's secret <b className="text-white">MCU character</b>. Every guess is scanned and compared to the
-          target. Unlimited guesses.
+          Identify {endless ? "the" : "today's"} secret <b className="text-white">MCU character</b>. Every guess is scanned and
+          compared to the target. Unlimited guesses.
         </p>
 
         <div className="space-y-2">
@@ -49,7 +50,9 @@ export default function HowToPlayModal({ open, onClose }: { open: boolean; onClo
         </div>
 
         <p className="m-0 border-t border-holo/15 pt-4 font-mono text-[12px] text-holo/70">
-          New target every day at midnight (CET). Same target for everyone.
+          {endless
+            ? "New random target every round. Giving up shows the answer and resets your streak."
+            : "New target every day at midnight (CET). Same target for everyone."}
         </p>
       </div>
     </Modal>
