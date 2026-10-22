@@ -7,7 +7,7 @@ import type { Character } from "../types";
   - Netflix/Fox/Sony characters are only in here if they showed up in a Marvel Studios
     project, and their debutPhase is that Marvel Studios debut (e.g. Daredevil -> No Way Home).
   - status = state as of October 2026 (after Spider-Man: Brand New Day, Daredevil: Born Again S2,
-    Wonder Man; before Avengers: Doomsday). Missing / "presumed dead" / in limbo = "Unknown".
+    Wonder Man; before Avengers: Doomsday). Only Alive or Deceased: anyone not shown dying counts as Alive (e.g. the Eternals taken by Arishem).
   - Portraits: drop an image at public/portraits/<id>.jpg and it shows up automatically.
     Or set imageUrl to any full https:// link. No image = initials badge.
 
@@ -34,7 +34,7 @@ const entries: Entry[] = [
   { id: "black-widow", name: "Black Widow", alias: "Natasha Romanoff", gender: "Female", species: ["Human"], status: "Deceased", powerType: ["Physical/Peak"], affiliation: ["Avengers", "S.H.I.E.L.D.", "Red Room"], debutPhase: 1, debut: "Iron Man 2 (2010)" },
   { id: "hawkeye", name: "Hawkeye", alias: "Clint Barton", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Physical/Peak"], affiliation: ["Avengers", "S.H.I.E.L.D."], debutPhase: 1, debut: "Thor (2011)" },
   { id: "war-machine", name: "War Machine", alias: "James \"Rhodey\" Rhodes", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Technology"], affiliation: ["Avengers", "Government"], debutPhase: 1, debut: "Iron Man (2008)" },
-  { id: "scarlet-witch", name: "Scarlet Witch", alias: "Wanda Maximoff", gender: "Female", species: ["Human"], status: "Unknown", powerType: ["Magic", "Cosmic"], affiliation: ["Avengers", "Hydra"], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
+  { id: "scarlet-witch", name: "Scarlet Witch", alias: "Wanda Maximoff", gender: "Female", species: ["Human"], status: "Deceased", powerType: ["Magic", "Cosmic"], affiliation: ["Avengers", "Hydra"], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
   { id: "quicksilver", name: "Quicksilver", alias: "Pietro Maximoff", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Biological"], affiliation: ["Avengers", "Hydra"], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
   { id: "vision", name: "Vision", gender: "Male", species: ["Synthezoid"], status: "Alive", powerType: ["Technology", "Cosmic"], affiliation: ["Avengers"], debutPhase: 2, debut: "Avengers: Age of Ultron (2015)" },
   { id: "sam-wilson", name: "Sam Wilson", alias: "Captain America / Falcon", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Technology"], affiliation: ["Avengers"], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
@@ -91,7 +91,7 @@ const entries: Entry[] = [
   { id: "valentina", name: "Valentina Allegra de Fontaine", alias: "Contessa", gender: "Female", species: ["Human"], status: "Alive", powerType: ["None"], affiliation: ["Government"], debutPhase: 4, debut: "The Falcon and the Winter Soldier (2021)" },
   { id: "isaiah-bradley", name: "Isaiah Bradley", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Super Soldier"], affiliation: ["Independent"], debutPhase: 4, debut: "The Falcon and the Winter Soldier (2021)" },
   { id: "sharon-carter", name: "Sharon Carter", alias: "Power Broker", gender: "Female", species: ["Human"], status: "Alive", powerType: ["Physical/Peak"], affiliation: ["Villain"], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
-  { id: "red-skull", name: "Red Skull", alias: "Johann Schmidt", gender: "Male", species: ["Human"], status: "Unknown", powerType: ["Super Soldier"], affiliation: ["Hydra"], debutPhase: 1, debut: "Captain America: The First Avenger (2011)" },
+  { id: "red-skull", name: "Red Skull", alias: "Johann Schmidt", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Super Soldier"], affiliation: ["Hydra"], debutPhase: 1, debut: "Captain America: The First Avenger (2011)" },
   { id: "alexander-pierce", name: "Alexander Pierce", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["None"], affiliation: ["Hydra", "S.H.I.E.L.D."], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
   { id: "crossbones", name: "Crossbones", alias: "Brock Rumlow", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Physical/Peak", "Technology"], affiliation: ["Hydra", "S.H.I.E.L.D."], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
   { id: "zemo", name: "Baron Zemo", alias: "Helmut Zemo", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Physical/Peak"], affiliation: ["Villain"], debutPhase: 3, debut: "Captain America: Civil War (2016)" },
@@ -147,10 +147,10 @@ const entries: Entry[] = [
   { id: "wonder-man", name: "Wonder Man", alias: "Simon Williams", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Independent"], debutPhase: 6, debut: "Wonder Man (2026)" },
 
   // ── Eternals ─────────────────────────────────────────────────────────────
-  { id: "sersi", name: "Sersi", gender: "Female", species: ["Eternal"], status: "Unknown", powerType: ["Cosmic"], affiliation: ["Eternals"], debutPhase: 4, debut: "Eternals (2021)" },
+  { id: "sersi", name: "Sersi", gender: "Female", species: ["Eternal"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Eternals"], debutPhase: 4, debut: "Eternals (2021)" },
   { id: "ikaris", name: "Ikaris", gender: "Male", species: ["Eternal"], status: "Deceased", powerType: ["Cosmic"], affiliation: ["Eternals"], debutPhase: 4, debut: "Eternals (2021)" },
   { id: "thena", name: "Thena", gender: "Female", species: ["Eternal"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Eternals"], debutPhase: 4, debut: "Eternals (2021)" },
-  { id: "kingo", name: "Kingo", gender: "Male", species: ["Eternal"], status: "Unknown", powerType: ["Cosmic"], affiliation: ["Eternals"], debutPhase: 4, debut: "Eternals (2021)" },
+  { id: "kingo", name: "Kingo", gender: "Male", species: ["Eternal"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Eternals"], debutPhase: 4, debut: "Eternals (2021)" },
   { id: "ajak", name: "Ajak", gender: "Female", species: ["Eternal"], status: "Deceased", powerType: ["Cosmic"], affiliation: ["Eternals"], debutPhase: 4, debut: "Eternals (2021)" },
   { id: "druig", name: "Druig", gender: "Male", species: ["Eternal"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Eternals"], debutPhase: 4, debut: "Eternals (2021)" },
   { id: "makkari", name: "Makkari", gender: "Female", species: ["Eternal"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Eternals"], debutPhase: 4, debut: "Eternals (2021)" },
@@ -160,13 +160,13 @@ const entries: Entry[] = [
   { id: "hank-pym", name: "Hank Pym", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Technology"], affiliation: ["S.H.I.E.L.D."], debutPhase: 2, debut: "Ant-Man (2015)" },
   { id: "cassie-lang", name: "Cassie Lang", gender: "Female", species: ["Human"], status: "Alive", powerType: ["Technology"], affiliation: ["Independent"], debutPhase: 2, debut: "Ant-Man (2015)" },
   { id: "modok", name: "M.O.D.O.K.", alias: "Darren Cross / Yellowjacket", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 2, debut: "Ant-Man (2015)" },
-  { id: "kang", name: "Kang the Conqueror", gender: "Male", species: ["Human"], status: "Unknown", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 5, debut: "Ant-Man and the Wasp: Quantumania (2023)" },
+  { id: "kang", name: "Kang the Conqueror", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 5, debut: "Ant-Man and the Wasp: Quantumania (2023)" },
   { id: "he-who-remains", name: "He Who Remains", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Technology"], affiliation: ["TVA"], debutPhase: 4, debut: "Loki (2021)" },
   { id: "mobius", name: "Mobius", alias: "Mobius M. Mobius", gender: "Male", species: ["Human"], status: "Alive", powerType: ["None"], affiliation: ["TVA"], debutPhase: 4, debut: "Loki (2021)" },
   { id: "sylvie", name: "Sylvie", gender: "Female", species: ["Frost Giant"], status: "Alive", powerType: ["Magic", "Divine"], affiliation: ["Independent"], debutPhase: 4, debut: "Loki (2021)" },
 
   // ── Captain Marvel & Kree / Skrull ───────────────────────────────────────
-  { id: "monica-rambeau", name: "Monica Rambeau", gender: "Female", species: ["Human"], status: "Unknown", powerType: ["Cosmic"], affiliation: ["Independent"], debutPhase: 3, debut: "Captain Marvel (2019)" },
+  { id: "monica-rambeau", name: "Monica Rambeau", gender: "Female", species: ["Human"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Independent"], debutPhase: 3, debut: "Captain Marvel (2019)" },
   { id: "ms-marvel", name: "Ms. Marvel", alias: "Kamala Khan", gender: "Female", species: ["Mutant"], status: "Alive", powerType: ["Cosmic", "Biological"], affiliation: ["Independent"], debutPhase: 4, debut: "Ms. Marvel (2022)" },
   { id: "yon-rogg", name: "Yon-Rogg", gender: "Male", species: ["Kree"], status: "Alive", powerType: ["Physical/Peak"], affiliation: ["Kree Empire"], debutPhase: 3, debut: "Captain Marvel (2019)" },
   { id: "dar-benn", name: "Dar-Benn", gender: "Female", species: ["Kree"], status: "Deceased", powerType: ["Cosmic"], affiliation: ["Kree Empire"], debutPhase: 5, debut: "The Marvels (2023)" },
@@ -181,7 +181,7 @@ const entries: Entry[] = [
   { id: "vulture", name: "Vulture", alias: "Adrian Toomes", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 3, debut: "Spider-Man: Homecoming (2017)" },
   { id: "mysterio", name: "Mysterio", alias: "Quentin Beck", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 3, debut: "Spider-Man: Far From Home (2019)" },
   { id: "jean-grey", name: "Jean Grey", gender: "Female", species: ["Mutant"], status: "Alive", powerType: ["Biological"], affiliation: ["Independent"], debutPhase: 6, debut: "Spider-Man: Brand New Day (2026)" },
-  { id: "bill-metzger", name: "Bill Metzger", gender: "Male", species: ["Human"], status: "Unknown", powerType: ["None"], affiliation: ["Government"], debutPhase: 6, debut: "Spider-Man: Brand New Day (2026)" },
+  { id: "bill-metzger", name: "Bill Metzger", gender: "Male", species: ["Human"], status: "Alive", powerType: ["None"], affiliation: ["Government"], debutPhase: 6, debut: "Spider-Man: Brand New Day (2026)" },
 
   // ── Street level ─────────────────────────────────────────────────────────
   { id: "daredevil", name: "Daredevil", alias: "Matt Murdock", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Biological", "Physical/Peak"], affiliation: ["Independent"], debutPhase: 4, debut: "Spider-Man: No Way Home (2021)" },
@@ -200,15 +200,15 @@ const entries: Entry[] = [
   { id: "whiplash", name: "Whiplash", alias: "Ivan Vanko", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 1, debut: "Iron Man 2 (2010)" },
   { id: "justin-hammer", name: "Justin Hammer", gender: "Male", species: ["Human"], status: "Alive", powerType: ["None"], affiliation: ["Villain"], debutPhase: 1, debut: "Iron Man 2 (2010)" },
   { id: "aldrich-killian", name: "Aldrich Killian", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Biological"], affiliation: ["Villain"], debutPhase: 2, debut: "Iron Man 3 (2013)" },
-  { id: "ultron", name: "Ultron", gender: "Male", species: ["AI"], status: "Unknown", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 2, debut: "Avengers: Age of Ultron (2015)" },
+  { id: "ultron", name: "Ultron", gender: "Male", species: ["AI"], status: "Alive", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 2, debut: "Avengers: Age of Ultron (2015)" },
 
   // ── Fantastic Four ───────────────────────────────────────────────────────
   { id: "mister-fantastic", name: "Mister Fantastic", alias: "Reed Richards", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Fantastic Four"], debutPhase: 6, debut: "The Fantastic Four: First Steps (2025)" },
   { id: "invisible-woman", name: "Invisible Woman", alias: "Sue Storm", gender: "Female", species: ["Human"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Fantastic Four"], debutPhase: 6, debut: "The Fantastic Four: First Steps (2025)" },
   { id: "human-torch", name: "Human Torch", alias: "Johnny Storm", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Fantastic Four"], debutPhase: 6, debut: "The Fantastic Four: First Steps (2025)" },
   { id: "the-thing", name: "The Thing", alias: "Ben Grimm", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Fantastic Four"], debutPhase: 6, debut: "The Fantastic Four: First Steps (2025)" },
-  { id: "galactus", name: "Galactus", gender: "Male", species: ["Alien"], status: "Unknown", powerType: ["Cosmic"], affiliation: ["Villain"], debutPhase: 6, debut: "The Fantastic Four: First Steps (2025)" },
-  { id: "silver-surfer", name: "Silver Surfer", alias: "Shalla-Bal", gender: "Female", species: ["Alien"], status: "Unknown", powerType: ["Cosmic"], affiliation: ["Villain"], debutPhase: 6, debut: "The Fantastic Four: First Steps (2025)" },
+  { id: "galactus", name: "Galactus", gender: "Male", species: ["Alien"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Villain"], debutPhase: 6, debut: "The Fantastic Four: First Steps (2025)" },
+  { id: "silver-surfer", name: "Silver Surfer", alias: "Shalla-Bal", gender: "Female", species: ["Alien"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Villain"], debutPhase: 6, debut: "The Fantastic Four: First Steps (2025)" },
 
   // ── Multiverse ───────────────────────────────────────────────────────────
   { id: "deadpool", name: "Deadpool", alias: "Wade Wilson", gender: "Male", species: ["Mutant"], status: "Alive", powerType: ["Biological"], affiliation: ["Independent"], debutPhase: 5, debut: "Deadpool & Wolverine (2024)" },

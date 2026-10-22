@@ -10,6 +10,7 @@ interface Props {
   guessCount: number;
   shareText: string;
   delay: number; // wait for the tiles to finish flipping
+  nextLive?: boolean; // midnight already passed, the next target is out
 }
 
 /** Target-lock reticle that snaps onto the portrait. */
@@ -33,7 +34,7 @@ function LockReticle() {
   );
 }
 
-export default function WinCard({ answer, guessCount, shareText, delay }: Props) {
+export default function WinCard({ answer, guessCount, shareText, delay, nextLive }: Props) {
   const [copied, setCopied] = useState(false);
 
   const share = async () => {
@@ -83,7 +84,7 @@ export default function WinCard({ answer, guessCount, shareText, delay }: Props)
 
       <div className="flex items-center justify-between gap-3 border-t border-amber/20 px-4 py-3">
         <div className="font-mono text-[12px] text-holo/70">
-          NEXT TARGET <Countdown className="text-amber" />
+          {nextLive ? <span className="text-amber">NEXT TARGET LIVE</span> : <>NEXT TARGET <Countdown className="text-amber" /></>}
         </div>
         <button
           type="button"

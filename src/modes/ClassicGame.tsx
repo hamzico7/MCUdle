@@ -61,19 +61,29 @@ export default function ClassicGame({ onHome }: { onHome: () => void }) {
     return () => clearTimeout(t);
   }, []);
 
-  // midnight (CET/CEST) rollover while the tab is open
+  // the real current date; differs from `today` while you finish a board you started before midnight
+  const [liveKey, setLiveKey] = useState(today);
+  const stale = liveKey !== today;
+
+  const loadKey = useCallback((k: string) => {
+    setToday(k);
+    setDay(loadDay(k));
+    setStats(loadStats(k));
+    setNewestId(null);
+  }, []);
+
+  // Midnight (CET/CEST) rollover while the tab is open. An untouched board switches to the new
+  // target right away; a board you already guessed on stays on its target until you switch,
+  // so the clues never silently start pointing at a different character.
   useEffect(() => {
     const t = setInterval(() => {
       const k = dateKey();
-      if (k !== today) {
-        setToday(k);
-        setDay(loadDay(k));
-        setStats(loadStats(k));
-        setNewestId(null);
-      }
+      if (k === liveKey) return;
+      setLiveKey(k);
+      if (day.guesses.length === 0) loadKey(k);
     }, 1000);
     return () => clearInterval(t);
-  }, [today]);
+  }, [liveKey, day.guesses.length, loadKey]);
 
   const onGuess = useCallback(
     (id: string) => {
@@ -130,6 +140,22 @@ export default function ClassicGame({ onHome }: { onHome: () => void }) {
         </div>
 
         <main className="flex flex-1 flex-col gap-4">
+          {stale && (
+            <div role="status" className="tile flex items-center justify-between gap-3 bg-amber/10 px-3 py-2.5 shadow-[inset_0_0_0_1px_rgb(255_181_71/0.5)]">
+              <div className="min-w-0 text-[13px] leading-snug text-ice/85">
+                <span className="block font-hud text-[9px] tracking-[0.2em] text-amber">NEW TARGET LIVE</span>
+                {day.won ? "Day " + dayNumber(liveKey) + " has started." : "Midnight passed. This board is still on yesterday's target."}
+              </div>
+              <button
+                type="button"
+                onClick={() => loadKey(liveKey)}
+                className="tile h-9 shrink-0 bg-amber px-3 font-hud text-[9px] tracking-[0.18em] text-void transition hover:bg-white active:scale-95"
+              >
+                {day.won ? "PLAY" : "SWITCH"}
+              </button>
+            </div>
+          )}
+
           <Panel label="Target identification" right={`${characters.length} PROFILES`} className="z-20">
             <SearchBar guessed={guessed} disabled={day.won} onGuess={onGuess} />
             <div className="mt-3">
@@ -138,7 +164,7 @@ export default function ClassicGame({ onHome }: { onHome: () => void }) {
           </Panel>
 
           {day.won && (
-            <WinCard answer={answer} guessCount={day.guesses.length} shareText={shareText} delay={newestId ? FLIP_TIME : 0} />
+            <WinCard answer={answer} guessCount={day.guesses.length} shareText={shareText} delay={newestId ? FLIP_TIME : 0} nextLive={stale} />
           )}
 
           <GuessGrid guesses={day.guesses} answer={answer} newestId={newestId} />

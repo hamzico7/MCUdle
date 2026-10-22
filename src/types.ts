@@ -15,7 +15,7 @@ export type Species =
   | "Animal"
   | "Alien";
 
-export type Status = "Alive" | "Deceased" | "Unknown";
+export type Status = "Alive" | "Deceased";
 
 export type PowerType =
   | "Technology"
