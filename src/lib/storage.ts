@@ -14,6 +14,7 @@ export interface DayState {
   date: string; // YYYY-MM-DD (CET/CEST)
   guesses: string[]; // character ids, oldest first
   won: boolean;
+  gaveUp?: boolean; // answer revealed with GIVE UP
 }
 
 export type Bucket = "1" | "2" | "3" | "4" | "5" | "6+";
@@ -97,6 +98,13 @@ export function recordWin(stats: Stats, today: string, guessCount: number): Stat
     distribution: { ...stats.distribution, [bucket]: stats.distribution[bucket] + 1 },
     lastWinDate: today,
   };
+  write(STATS_KEY, next);
+  return next;
+}
+
+/** Giving up breaks the daily streak (tomorrow's win starts again at 1). */
+export function recordGiveUp(stats: Stats): Stats {
+  const next: Stats = { ...stats, currentStreak: 0, lastWinDate: null };
   write(STATS_KEY, next);
   return next;
 }

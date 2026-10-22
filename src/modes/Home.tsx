@@ -69,6 +69,10 @@ export default function Home({ onOpen }: { onOpen: (r: Route) => void }) {
     <span className="text-hit-glow">
       SOLVED IN {day.guesses.length} · NEXT IN <Countdown />
     </span>
+  ) : day.gaveUp ? (
+    <span className="text-amber">
+      REVEALED · NEXT IN <Countdown />
+    </span>
   ) : day.guesses.length ? (
     <span className="text-amber">IN PROGRESS · {day.guesses.length} {day.guesses.length === 1 ? "SCAN" : "SCANS"}</span>
   ) : (

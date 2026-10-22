@@ -1,5 +1,6 @@
-import { ArrowRight, Flag } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
+import GiveUp from "../components/GiveUp";
 import GuessGrid from "../components/GuessGrid";
 import Header from "../components/Header";
 import HowToPlayModal from "../components/HowToPlayModal";
@@ -79,15 +80,7 @@ export default function EndlessGame({ onHome }: { onHome: () => void }) {
               <div className="min-w-0 flex-1">
                 <JarvisLine key={jarvis.text} text={jarvis.text} tone={jarvis.tone} />
               </div>
-              {!over && state.guesses.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => update(giveUpEndless(state))}
-                  className="flex shrink-0 items-center gap-1.5 font-mono text-[11px] text-holo/55 transition hover:text-miss-glow"
-                >
-                  <Flag size={12} /> GIVE UP
-                </button>
-              )}
+              {!over && <GiveUp wrong={state.guesses.length} onGiveUp={() => update(giveUpEndless(state))} />}
             </div>
           </Panel>
 

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CountdownModal from "../components/CountdownModal";
+import GiveUp from "../components/GiveUp";
 import GuessGrid from "../components/GuessGrid";
 import Header from "../components/Header";
 import HowToPlayModal from "../components/HowToPlayModal";
@@ -18,6 +19,7 @@ import {
   loadDay,
   loadStats,
   markHelpSeen,
+  recordGiveUp,
   recordPlayed,
   recordWin,
   saveDay,
@@ -71,7 +73,7 @@ export default function ClassicGame({ onHome }: { onHome: () => void }) {
 
   const onGuess = useCallback(
     (id: string) => {
-      if (day.won || day.guesses.includes(id)) return;
+      if (day.won || day.gaveUp || day.guesses.includes(id)) return;
       const guesses = [...day.guesses, id];
       const won = id === answer.id;
       const next: DayState = { date: today, guesses, won };
@@ -90,6 +92,15 @@ export default function ClassicGame({ onHome }: { onHome: () => void }) {
     [day, answer.id, today, stats],
   );
 
+  const onGiveUp = useCallback(() => {
+    if (day.won || day.gaveUp) return;
+    const next: DayState = { ...day, gaveUp: true };
+    setStats(recordGiveUp(stats));
+    setDay(next);
+    saveDay(next);
+    setNewestId(null);
+  }, [day, stats]);
+
   const closeModal = useCallback(() => {
     if (modal === "help") markHelpSeen();
     setModal(null);
@@ -97,6 +108,7 @@ export default function ClassicGame({ onHome }: { onHome: () => void }) {
 
   const jarvis = useMemo(() => {
     if (day.won) return { text: `Identity confirmed: ${answer.name}. Well done, sir.`, tone: "hit" as const };
+    if (day.gaveUp) return { text: `Target was ${answer.name}. Streak reset. New target at midnight, sir.`, tone: "amber" as const };
     const last = day.guesses.at(-1);
     if (!last) return { text: "Daily target acquired. Awaiting your first identification, sir.", tone: "holo" as const };
     const g = characterById.get(last)!;
@@ -107,8 +119,11 @@ export default function ClassicGame({ onHome }: { onHome: () => void }) {
     const rows = day.guesses.map((id) => emojiRow(compare(characterById.get(id)!, answer)));
     const shown = rows.length > 8 ? [...rows.slice(0, 7), `…+${rows.length - 7} more`] : rows;
     const url = typeof location !== "undefined" ? location.origin : "";
-    return `MCUDLE #${dayNumber(today)} — ${day.guesses.length} ${day.guesses.length === 1 ? "guess" : "guesses"}\n${shown.join("\n")}\n${url}`;
-  }, [day.guesses, answer, today]);
+    const result = day.gaveUp ? `gave up after ${day.guesses.length}` : `${day.guesses.length} ${day.guesses.length === 1 ? "guess" : "guesses"}`;
+    return `MCUDLE #${dayNumber(today)} — ${result}\n${shown.join("\n")}\n${url}`;
+  }, [day.guesses, day.gaveUp, answer, today]);
+
+  const over = day.won || !!day.gaveUp;
 
   return (
     <>
@@ -128,27 +143,38 @@ export default function ClassicGame({ onHome }: { onHome: () => void }) {
             <div role="status" className="tile flex items-center justify-between gap-3 bg-amber/10 px-3 py-2.5 shadow-[inset_0_0_0_1px_rgb(255_181_71/0.5)]">
               <div className="min-w-0 text-[13px] leading-snug text-ice/85">
                 <span className="block font-hud text-[9px] tracking-[0.2em] text-amber">NEW TARGET LIVE</span>
-                {day.won ? "Day " + dayNumber(liveKey) + " has started." : "Midnight passed. This board is still on yesterday's target."}
+                {over ? "Day " + dayNumber(liveKey) + " has started." : "Midnight passed. This board is still on yesterday's target."}
               </div>
               <button
                 type="button"
                 onClick={() => loadKey(liveKey)}
                 className="tile h-9 shrink-0 bg-amber px-3 font-hud text-[9px] tracking-[0.18em] text-void transition hover:bg-white active:scale-95"
               >
-                {day.won ? "PLAY" : "SWITCH"}
+                {over ? "PLAY" : "SWITCH"}
               </button>
             </div>
           )}
 
           <Panel label="Target identification" right={`${characters.length} PROFILES`} className="z-20">
-            <SearchBar guessed={guessed} disabled={day.won} onGuess={onGuess} />
-            <div className="mt-3">
-              <JarvisLine key={jarvis.text} text={jarvis.text} tone={jarvis.tone} />
+            <SearchBar guessed={guessed} disabled={over} disabledText={day.won ? "Target identified" : "Target revealed"} onGuess={onGuess} />
+            <div className="mt-3 flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <JarvisLine key={jarvis.text} text={jarvis.text} tone={jarvis.tone} />
+              </div>
+              {!over && <GiveUp wrong={day.guesses.length} onGiveUp={onGiveUp} />}
             </div>
           </Panel>
 
-          {day.won && (
-            <WinCard answer={answer} guessCount={day.guesses.length} shareText={shareText} delay={newestId ? FLIP_TIME : 0} nextLive={stale} />
+          {over && (
+            <WinCard
+              answer={answer}
+              guessCount={day.guesses.length}
+              shareText={shareText}
+              title={day.won ? "Identity confirmed" : "Target revealed"}
+              reticle={day.won}
+              delay={day.won && newestId ? FLIP_TIME : 0}
+              nextLive={stale}
+            />
           )}
 
           <GuessGrid guesses={day.guesses} answer={answer} newestId={newestId} />
