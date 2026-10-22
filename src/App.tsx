@@ -3,6 +3,7 @@ import HudBackground from "./components/HudBackground";
 import { characters } from "./data/characters";
 import { useRoute } from "./lib/route";
 import ClassicGame from "./modes/ClassicGame";
+import EmojiGame from "./modes/EmojiGame";
 import EndlessGame from "./modes/EndlessGame";
 import Home from "./modes/Home";
 import QuoteGame from "./modes/QuoteGame";
@@ -20,6 +21,8 @@ export default function App() {
         <EndlessGame onHome={() => go("home")} />
       ) : route === "quote" ? (
         <QuoteGame onHome={() => go("home")} />
+      ) : route === "emoji" ? (
+        <EmojiGame onHome={() => go("home")} />
       ) : (
         <Home onOpen={go} />
       )}

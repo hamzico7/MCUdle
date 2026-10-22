@@ -1,13 +1,12 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { Check, Clapperboard, Lock, MessageCircle, Quote as QuoteIcon, X } from "lucide-react";
+import { Clapperboard, Lock, MessageCircle, Quote as QuoteIcon } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CountdownModal from "../components/CountdownModal";
 import GiveUp from "../components/GiveUp";
+import GuessList from "../components/GuessList";
 import Header from "../components/Header";
 import JarvisLine from "../components/JarvisLine";
 import Modal from "../components/Modal";
 import Panel from "../components/Panel";
-import Portrait from "../components/Portrait";
 import SearchBar from "../components/SearchBar";
 import StatsModal from "../components/StatsModal";
 import WinCard from "../components/WinCard";
@@ -168,7 +167,6 @@ export default function QuoteGame({ onHome }: { onHome: () => void }) {
   }, [day.guesses, day.gaveUp, answer.id, today]);
 
   const source = `${quote.source}${quote.year ? ` (${quote.year})` : ""}`;
-  const rows = [...day.guesses].reverse(); // newest on top
 
   return (
     <>
@@ -236,32 +234,7 @@ export default function QuoteGame({ onHome }: { onHome: () => void }) {
             />
           )}
 
-          {/* guesses: green = right, red = wrong */}
-          <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-            <AnimatePresence initial={false}>
-              {rows.map((id) => {
-                const c = characterById.get(id);
-                if (!c) return null;
-                const hit = id === answer.id;
-                return (
-                  <motion.li
-                    key={id}
-                    layout
-                    initial={id === newestId ? { opacity: 0, x: -16 } : false}
-                    animate={{ opacity: 1, x: 0 }}
-                    className={`tile flex items-center gap-3 py-1.5 pr-3 pl-1.5 text-white ${hit ? "tile-correct" : "tile-wrong"}`}
-                    aria-label={`${c.name}: ${hit ? "correct" : "wrong"}`}
-                  >
-                    <span className="tile size-10 shrink-0 overflow-hidden">
-                      <Portrait character={c} fill />
-                    </span>
-                    <span className="min-w-0 flex-1 truncate font-semibold tracking-wide uppercase">{c.name}</span>
-                    {hit ? <Check size={18} /> : <X size={18} />}
-                  </motion.li>
-                );
-              })}
-            </AnimatePresence>
-          </ul>
+          <GuessList guesses={day.guesses} answerId={answer.id} newestId={newestId} />
         </main>
 
         <footer className="mt-10 text-center font-mono text-[10px] leading-relaxed text-holo/40">

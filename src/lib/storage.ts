@@ -10,9 +10,10 @@ const SEEN_HELP_KEY = "mcudle:seenHelp";
 
 /**
  * Daily modes each get their own save slots. Classic uses "" (keys mcudle:day / mcudle:stats,
- * unchanged so nobody loses progress); Quote uses "quote" (mcudle:quote:day / mcudle:quote:stats).
+ * unchanged so nobody loses progress); Quote uses "quote" (mcudle:quote:day / mcudle:quote:stats),
+ * Emoji uses "emoji" (mcudle:emoji:day / mcudle:emoji:stats).
  */
-export type DailyMode = "" | "quote";
+export type DailyMode = "" | "quote" | "emoji";
 const dayKey = (mode: DailyMode) => (mode ? `mcudle:${mode}:day` : "mcudle:day");
 const statsKey = (mode: DailyMode) => (mode ? `mcudle:${mode}:stats` : "mcudle:stats");
 

@@ -82,6 +82,7 @@ export default function Home({ onOpen }: { onOpen: (r: Route) => void }) {
     );
   const classicStatus = dailyStatus(day, `NEW TARGET AVAILABLE · DAY ${dayNumber(today)}`);
   const quoteStatus = dailyStatus(loadDay(today, "quote"), `NEW QUOTE AVAILABLE · #${dayNumber(today)}`);
+  const emojiStatus = dailyStatus(loadDay(today, "emoji"), `NEW EMOJIS AVAILABLE · #${dayNumber(today)}`);
 
   const endless = loadEndless();
   const endlessStatus = endless.solved || endless.guesses.length ? (
@@ -96,7 +97,7 @@ export default function Home({ onOpen }: { onOpen: (r: Route) => void }) {
     { id: "classic", route: "classic", title: "Classic", blurb: "Guess today's MCU character.", icon: <ScanFace size={26} strokeWidth={1.6} />, status: classicStatus },
     { id: "endless", route: "endless", title: "Endless", blurb: "Unlimited rounds, a new character every time.", icon: <InfinityIcon size={26} strokeWidth={1.6} />, status: endlessStatus },
     { id: "quote", route: "quote", title: "Quote", blurb: "Who said it? A new MCU quote every day.", icon: <MessageSquareQuote size={26} strokeWidth={1.6} />, status: quoteStatus },
-    { id: "emoji", title: "Emoji", blurb: "Guess the character from emojis.", icon: <Smile size={26} strokeWidth={1.6} /> },
+    { id: "emoji", route: "emoji", title: "Emoji", blurb: "Guess the character from emojis.", icon: <Smile size={26} strokeWidth={1.6} />, status: emojiStatus },
   ];
 
   const greeting = day.won
