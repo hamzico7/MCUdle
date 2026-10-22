@@ -71,26 +71,8 @@ function rng(seed: number) {
   };
 }
 
-/**
- * Every "cycle" of N days uses a fresh seeded shuffle of all characters, so nobody
- * repeats until every character has been the answer once. Same code + same date
- * = same character for every player on Earth, no server needed.
- */
-function cycleOrder(cycle: number): Character[] {
-  const sorted = [...characters].sort((a, b) => a.id.localeCompare(b.id));
-  const rand = rng(hash(`${SHUFFLE_SEED}:${cycle}`));
-  for (let i = sorted.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
-  }
-  return sorted;
-}
-
 export function characterForDate(key: string): Character {
-  const n = characters.length;
-  const day = Math.max(0, daysBetween(EPOCH, key));
-  const cycle = Math.floor(day / n);
-  return cycleOrder(cycle)[day % n];
+  return dailyItem(characters, key, SHUFFLE_SEED);
 }
 
 /** Milliseconds until the next midnight CET/CEST. */
@@ -116,18 +98,33 @@ export function formatCountdown(ms: number): string {
 }
 
 /**
- * Same no-repeat daily shuffle for any other list (e.g. quotes), with its own seed so it
- * doesn't line up with the character order. Items need a stable unique id.
+ * The daily pick, used for characters, quotes and emoji characters (each with its own seed).
+ *
+ * Days are grouped into "cycles". Each cycle uses a fresh seeded shuffle of every item, so
+ * nothing repeats until every item has had its day. Same code + same date = same pick for
+ * every player on Earth, no server needed.
+ *
+ * Items can have an `addedOn` date ("YYYY-MM-DD"). They only join the draw from the first
+ * cycle that STARTS after that date, so adding new characters or quotes (e.g. by the weekly
+ * auto-update) never changes today's answer or any other day of the running cycle.
+ * Items without `addedOn` are part of the original roster.
  */
-export function dailyItem<T extends { id: string }>(items: readonly T[], key: string, seed: string): T {
-  const n = items.length;
+export function dailyItem<T extends { id: string; addedOn?: string }>(items: readonly T[], key: string, seed: string): T {
   const day = Math.max(0, daysBetween(EPOCH, key));
-  const cycle = Math.floor(day / n);
-  const sorted = [...items].sort((a, b) => a.id.localeCompare(b.id));
-  const rand = rng(hash(`${seed}:${cycle}`));
-  for (let i = sorted.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
+  let start = 0; // first day of the current cycle
+  for (let cycle = 0; ; cycle++) {
+    const startKey = shiftKey(EPOCH, start);
+    const pool = items.filter((it) => !it.addedOn || it.addedOn < startKey);
+    const n = pool.length;
+    if (day < start + n) {
+      const sorted = [...pool].sort((a, b) => a.id.localeCompare(b.id));
+      const rand = rng(hash(`${seed}:${cycle}`));
+      for (let i = sorted.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
+      }
+      return sorted[day - start];
+    }
+    start += n;
   }
-  return sorted[day % n];
 }

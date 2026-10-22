@@ -4,7 +4,7 @@
   (marvelcinematicuniverse.fandom.com), Oct 2026. Only Marvel Studios movies and Disney+ shows
   (no Netflix/ABC shows, deleted scenes, comics, or unreleased films), only single-speaker lines
   of 4-18 words (25 for a few characters), and no line that says the speaker's own name.
-  Adding or removing quotes reshuffles future days (same as characters).
+  New quotes must get addedOn: "YYYY-MM-DD" so they don't change the running cycle. Never remove quotes.
 */
 export interface Quote {
   id: string; // stable: <characterId>-<n>
@@ -13,6 +13,7 @@ export interface Quote {
   source: string; // movie or show, shown as a hint
   year: number | null;
   to?: string; // who they said it to, shown as a hint
+  addedOn?: string; // "YYYY-MM-DD" for quotes added after launch; they join the draw from the next cycle
 }
 
 export const quotes: Quote[] = [

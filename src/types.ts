@@ -64,13 +64,18 @@ export interface Character {
   gender: Gender;
   /** One or more. Partial (orange) when guess and answer share some but not all values. */
   species: Species[];
-  /** Status as of the current MCU (Oct 2026, before Avengers: Doomsday) */
+  /** Status as of the latest MCU release */
   status: Status;
   powerType: PowerType[];
   affiliation: Affiliation[];
   debutPhase: Phase;
   /** First Marvel Studios project the character appeared in */
   debut: string;
+  /**
+   * Only for characters added after launch (e.g. by the weekly auto-update): the date they were
+   * added, "YYYY-MM-DD". They join the daily draw from the next cycle, so today's answer never changes.
+   */
+  addedOn?: string;
 }
 
 export type TileResult = "correct" | "partial" | "wrong" | "higher" | "lower";

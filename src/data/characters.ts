@@ -7,7 +7,8 @@ import type { Character } from "../types";
   - Netflix/Fox/Sony characters are only in here if they showed up in a Marvel Studios
     project, and their debutPhase is that Marvel Studios debut (e.g. Daredevil -> No Way Home).
   - status = state as of October 2026 (after Spider-Man: Brand New Day, Daredevil: Born Again S2,
-    Wonder Man; before Avengers: Doomsday). Only Alive or Deceased: anyone not shown dying counts as Alive (e.g. the Eternals taken by Arishem).
+    Wonder Man, VisionQuest; before Avengers: Doomsday). Kept up to date by the weekly
+    auto-update (see AUTO-UPDATE.md). Characters added later carry addedOn: "YYYY-MM-DD". Only Alive or Deceased: anyone not shown dying counts as Alive (e.g. the Eternals taken by Arishem).
   - Portraits: drop an image at public/portraits/<id>.jpg and it shows up automatically.
     Or set imageUrl to any full https:// link. No image = initials badge.
 
