@@ -10,6 +10,7 @@ Hamza (the owner) reviews and merges the pull request it opens. Nothing goes liv
 - **Only released content counts.** Use a movie or show only once it has actually been released (the episode has aired, or the film is out in cinemas or on Disney+). Ignore trailers, set photos, leaks and rumours.
 - **Look everything up**, don't assume. The source of truth is the MCU Fandom wiki (https://marvelcinematicuniverse.fandom.com). Use web search only to confirm release dates.
 - Only Marvel Studios movies, Marvel Studios Disney+ series and Marvel Studios specials count. No Sony Spider-Man Universe, Fox, Netflix, ABC or Hulu shows, What If…? or other animated alternate universes, comics, or games.
+- Names come from what the show/film says (per the wiki), never from actor socials or promo. The Stark AIs count as characters, with their original debut.
 - Never remove characters or quotes. Never change an existing `id`. Never touch `SHUFFLE_SEED`, `EPOCH`, the quote/emoji seeds, the logo or any UI code.
 - If nothing changed since the last check, don't create a branch or pull request. Just stop.
 
@@ -40,4 +41,4 @@ Hamza (the owner) reviews and merges the pull request it opens. Nothing goes liv
 ## Log
 
 - 2026-10-22: Baseline. Data covers everything up to Spider-Man: Brand New Day, Daredevil: Born Again Season 2, Wonder Man and VisionQuest. Next check starts after this date.
-- 2026-10-26: No new releases since 2026-10-22 (VisionQuest episodes 5-6 drop 27/28 Oct). Backfill of VisionQuest episodes 1-4, which the baseline had missed: added Tommy Maximoff, Jocasta and Paladin (portraits + emoji clues; no wiki quotes qualify yet). Status comment now says "VisionQuest episodes 1-4". Next check starts after this date.
+- 2026-10-26: No new releases since 2026-10-22 (VisionQuest episodes 5-6 drop 27/28 Oct). Backfill of VisionQuest episodes 1-4, which the baseline had missed: added Tommy Maximoff, Jocasta and Paladin (portraits + emoji clues; no wiki quotes qualify yet), plus the Stark AIs J.A.R.V.I.S., F.R.I.D.A.Y. and E.D.I.T.H. with their original debuts (owner's call: Stark AIs are in), 2 quotes. Status comment now says "VisionQuest episodes 1-4". Next check starts after this date.

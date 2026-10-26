@@ -638,5 +638,17 @@
  "paladin": {
   "title": "Paladin",
   "url": "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/3/3f/Paladin_Infobox.png/revision/latest?cb=20261016223322"
+ },
+ "jarvis": {
+  "title": "J.A.R.V.I.S.",
+  "url": "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/4/4b/JARVIS_Human_Avatar_Infobox.png/revision/latest?cb=20261019090446"
+ },
+ "friday": {
+  "title": "F.R.I.D.A.Y.",
+  "url": "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/a/aa/FRIDAY_Human_Avatar_Infobox.png/revision/latest?cb=20261019210535"
+ },
+ "edith": {
+  "title": "E.D.I.T.H.",
+  "url": "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/3/3e/EDITH_Human_Avatar_Infobox.png/revision/latest?cb=20261020155843"
  }
 }
