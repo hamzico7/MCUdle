@@ -16,9 +16,12 @@ interface Props {
   disabled: boolean;
   disabledText?: string; // placeholder once the round is over
   onGuess: (id: string) => void;
+  /** Hidden word that triggers onSecret instead of a search (Endless dev menu). */
+  secret?: string;
+  onSecret?: () => void;
 }
 
-export default function SearchBar({ guessed, disabled, disabledText = "Target identified", onGuess }: Props) {
+export default function SearchBar({ guessed, disabled, disabledText = "Target identified", onGuess, secret, onSecret }: Props) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -99,6 +102,12 @@ export default function SearchBar({ guessed, disabled, disabledText = "Target id
             value={query}
             placeholder={disabled ? disabledText : "Identify subject…"}
             onChange={(e) => {
+              if (secret && onSecret && norm(e.target.value).trim() === secret) {
+                setQuery("");
+                setOpen(false);
+                onSecret();
+                return;
+              }
               setQuery(e.target.value);
               setActive(0);
               setOpen(true);

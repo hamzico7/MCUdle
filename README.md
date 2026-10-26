@@ -1,139 +1,64 @@
 # MCUDLE
 
-Daily MCU character guessing game. One secret character per day, same for everyone, resets at midnight CET/CEST. No server — runs entirely in the browser.
+**Guess the MCU character. A new one every day.**
 
-Built with Vite + React + TypeScript + Tailwind CSS + Framer Motion + Lucide icons.
+▶ **Play now: [mcudle-amber.vercel.app](https://mcudle-amber.vercel.app)**
 
----
+MCUDLE is a free daily guessing game for Marvel Cinematic Universe fans, in the spirit of Wordle and Loldle. Every day there's one secret character, the same for everyone in the world, and you've got as many guesses as you need to figure out who it is. It resets at midnight (CET), so come back tomorrow for a new one.
 
-## Step 1 — Install the tools (one time only)
-
-1. **Node.js** — download the **LTS** version from https://nodejs.org and install it (just click Next through the installer).
-2. **VS Code** — https://code.visualstudio.com
-3. **Git** — https://git-scm.com/downloads (on Windows, keep all the default options).
-4. **GitHub account** — https://github.com/signup
-
-Check it worked: open a terminal (Windows: search "Terminal" or "PowerShell"; Mac: "Terminal") and run:
-
-```bash
-node -v
-npm -v
-git --version
-```
-
-Each should print a version number. If one says "not recognized", restart your computer and try again.
-
-## Step 2 — Open the project in VS Code
-
-1. Unzip `mcudle.zip` somewhere easy, e.g. `Documents/mcudle`.
-2. Open VS Code → **File → Open Folder…** → pick the `mcudle` folder.
-3. If VS Code asks "Do you trust the authors?" → **Yes**.
-4. Open the built-in terminal: **Terminal → New Terminal** (or `` Ctrl+` ``).
-
-## Step 3 — Run it on your computer
-
-In the VS Code terminal:
-
-```bash
-npm install
-npm run dev
-```
-
-`npm install` downloads the libraries (takes a minute, only needed once). `npm run dev` starts the game — Ctrl+click the `http://localhost:5173` link it prints. Edits you save show up instantly. Press `Ctrl+C` in the terminal to stop it.
-
-## Step 4 — Put it on GitHub
-
-1. Go to https://github.com/new
-2. Repository name: `mcudle`. Leave everything else as is (don't add a README). Click **Create repository**.
-3. Back in the VS Code terminal (stop the dev server first with `Ctrl+C`), run these one by one — replace `YOUR-USERNAME`:
-
-```bash
-git init
-git add .
-git commit -m "First version of MCUDLE"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/mcudle.git
-git push -u origin main
-```
-
-If git asks who you are, run these once and then repeat the commit command:
-
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "you@example.com"
-```
-
-The first push opens a browser window to log in to GitHub — just approve it.
-
-## Step 5 — Put it online for free (Vercel)
-
-1. Go to https://vercel.com → **Sign Up** → **Continue with GitHub**.
-2. Click **Add New… → Project**.
-3. Find `mcudle` in the list → **Import**.
-4. Vercel detects **Vite** automatically (build command `npm run build`, output folder `dist`). Don't change anything.
-5. Click **Deploy**. About a minute later you get a link like `https://mcudle.vercel.app`.
-
-From now on, every time you push to GitHub, Vercel updates the site by itself:
-
-```bash
-git add .
-git commit -m "Describe what you changed"
-git push
-```
-
-**Netlify instead?** https://app.netlify.com → **Add new site → Import an existing project → GitHub → mcudle**. Build command `npm run build`, publish directory `dist` → **Deploy**.
-
-**Install it like an app:** open your site on your phone → Share → **Add to Home Screen** (iPhone) or ⋮ → **Install app** (Android).
+It's dressed up as a Stark Industries heads-up display, with J.A.R.V.I.S. commenting on every guess.
 
 ---
 
-## Updating to a new version zip
+## Game modes
 
-1. Close the dev server (`Ctrl+C`).
-2. Unzip the new `mcudle.zip` and copy everything inside its `mcudle` folder over your existing `mcudle` folder (say **Replace** when Windows asks).
-3. In the VS Code terminal: `npm install` (new packages), then `npm run dev`.
-4. If it's already on GitHub: `git add .`, `git commit -m "Update"`, `git push` — Vercel redeploys by itself.
+### 🎯 Classic (daily)
+Guess any MCU character and see how close you are. Every guess is compared to the secret character in six categories:
 
----
-
-## How it works
-
-| File | What it does |
+| Column | What it tells you |
 | --- | --- |
-| `src/data/characters.ts` | All 157 characters and their attributes |
-| `src/lib/daily.ts` | Picks today's character from the date in CET/CEST (seeded shuffle — no repeats until everyone has been picked once) + countdown |
-| `src/lib/compare.ts` | Compares a guess to the answer (green / red / phase arrows) + share emojis |
-| `src/lib/storage.ts` | Saves today's guesses and your stats in `localStorage` |
-| `src/components/` | Logo, Header, HudBackground, BootSequence, Panel, JarvisLine, SearchBar, GuessGrid, Tile, StatsModal, HowToPlayModal, CountdownModal, WinCard |
-| `src/index.css` | The Stark HUD design system (colors, fonts, panels, tiles, motion) |
-| `public/` | App icons, PWA manifest, `portraits/` folder |
+| **Gender** | Male, female or other |
+| **Species** | Human, Asgardian, Kree, Mutant, Synthezoid, … |
+| **Status** | Alive or dead, as of the latest MCU release |
+| **Power** | Where their abilities come from: tech, magic, cosmic, gamma, super soldier, … |
+| **Team** | The group they belong to: Avengers, Guardians, Wakanda, Thunderbolts, … |
+| **Debut** | The MCU phase of their first appearance, with arrows if the answer is earlier or later |
 
-**Daily pick:** The `Europe/Berlin` time zone handles CET (winter, UTC+1) and CEST (summer, UTC+2) automatically. The date (`2026-10-21`) decides the character, so everyone gets the same one without a backend.
+🟩 green = exact match · 🟧 orange = partly right (they share some of it) · 🟥 red = no match.
 
-## Portraits
+### ♾️ Endless
+Classic, but you don't have to wait for tomorrow. A new random character every round. Build a win streak and chase your best one. Giving up ends the streak.
 
-All 157 portraits are in `public/portraits/<id>.jpg` (256×256, from the infobox images on the MCU Fandom wiki — `portrait-sources.json` lists where each came from).
+### 💬 Quote (daily)
+Read a real line from an MCU movie or show and guess who said it. Stuck? After 3 wrong guesses you find out which movie or show it's from, and after 6 who they were talking to.
 
-To get one for a new character:
-
-```bash
-node scripts/fetch-portrait.mjs <character-id> "<Fandom page title>"
-# e.g.
-node scripts/fetch-portrait.mjs jean-grey "Jean Grey"
-```
-
-Or just drop any image in `public/portraits/` named after the id. No image = initials badge.
-
-## Partial matches (orange)
-
-Species, Power and Team can have more than one value, e.g. Bucky is `["Thunderbolts", "Avengers", "Hydra"]`. If your guess shares some values with the answer the tile turns orange; same values = green; nothing in common = red.
-
-## Adding or editing characters
-
-Open `src/data/characters.ts` and copy a line. Use the exact values from the cheat sheet at the top of that file — a typo like `"human"` instead of `"Human"` will never match. Species, powerType and affiliation are lists in square brackets. Note: adding or removing characters changes the order of future daily picks (still the same for everyone, just a different sequence), so do it before you share the game widely, or accept the reshuffle.
-
-**Data notes:** statuses are as of October 2026 (after Spider-Man: Brand New Day, Daredevil: Born Again S2 and Wonder Man; before Avengers: Doomsday on Dec 18, 2026). After Doomsday, update statuses. Characters who are missing or in limbo (Wanda, Sersi, Kingo, Kang, Red Skull, Monica Rambeau, Galactus, Silver Surfer, Bill Metzger) are `"Unknown"`. Ultron is `"Unknown"` because VisionQuest is still airing. Debut phase = first **Marvel Studios** appearance, so Daredevil is Phase 4 (No Way Home) and the Punisher is Phase 5 (Born Again).
+### 😀 Emoji (daily)
+Guess the character from emojis. You start with one, and every wrong guess reveals another, from vague to obvious. 5 in total.
 
 ---
 
-Fan-made project. Not affiliated with or endorsed by Marvel or Disney.
+## Good to know
+
+- **The same puzzle for everyone.** Compare with your friends: hit **Share** for a spoiler-free 🟩🟥 result.
+- **Unlimited guesses.** If you're really stuck, a **Give up** button appears after 10 wrong guesses (it does end your streak).
+- **Streaks and stats** are saved on your device. Every mode keeps its own.
+- **Always up to date.** New characters, quotes and deaths from new MCU movies and shows get added after they come out.
+- **Install it like an app:** open the site on your phone → Share → *Add to Home Screen* (iPhone) or ⋮ → *Install app* (Android).
+
+## What's in it
+
+- 160+ characters from the Marvel Studios movies and Disney+ shows, from Iron Man (2008) to today
+- Nearly 500 real quotes
+- 5 emoji clues for every character
+
+Only Marvel Studios projects count, so no Sony, Fox or Netflix-only characters. Characters from those shows are in only if they've appeared in a Marvel Studios project.
+
+## Credits
+
+Character info, quotes and portraits come from the [MCU Fandom wiki](https://marvelcinematicuniverse.fandom.com). Made by Hamza as a fan project.
+
+**MCUDLE is fan-made and not affiliated with or endorsed by Marvel Studios or Disney.** All characters and images belong to their respective owners.
+
+---
+
+<sub>Developers: `npm install`, then `npm run dev` (local) or `npm run build`. Built with Vite, React, TypeScript and Tailwind. Data lives in `src/data/`; the weekly data update is described in `AUTO-UPDATE.md`.</sub>
