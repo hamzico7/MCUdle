@@ -6,8 +6,8 @@ import type { Character } from "../types";
   - Marvel Studios movies + Disney+ shows only.
   - Netflix/Fox/Sony characters are only in here if they showed up in a Marvel Studios
     project, and their debutPhase is that Marvel Studios debut (e.g. Daredevil -> No Way Home).
-  - status = state as of October 2026 (after Spider-Man: Brand New Day, Daredevil: Born Again S2,
-    Wonder Man, VisionQuest episodes 1-4; before Avengers: Doomsday). Kept up to date by the weekly
+  - status = state as of November 2026 (after Spider-Man: Brand New Day, Daredevil: Born Again S2,
+    Wonder Man, VisionQuest (all 8 episodes); before Avengers: Doomsday). Kept up to date by the weekly
     auto-update (see AUTO-UPDATE.md). Characters added later carry addedOn: "YYYY-MM-DD". Only Alive or Deceased: anyone not shown dying counts as Alive (e.g. the Eternals taken by Arishem).
   - Portraits: drop an image at public/portraits/<id>.jpg and it shows up automatically.
     Or set imageUrl to any full https:// link. No image = initials badge.
@@ -35,7 +35,7 @@ const entries: Entry[] = [
   { id: "black-widow", name: "Black Widow", alias: "Natasha Romanoff", gender: "Female", species: ["Human"], status: "Deceased", powerType: ["Physical/Peak"], affiliation: ["Avengers", "S.H.I.E.L.D.", "Red Room"], debutPhase: 1, debut: "Iron Man 2 (2010)" },
   { id: "hawkeye", name: "Hawkeye", alias: "Clint Barton", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Physical/Peak"], affiliation: ["Avengers", "S.H.I.E.L.D."], debutPhase: 1, debut: "Thor (2011)" },
   { id: "war-machine", name: "War Machine", alias: "James \"Rhodey\" Rhodes", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Technology"], affiliation: ["Avengers", "Government"], debutPhase: 1, debut: "Iron Man (2008)" },
-  { id: "scarlet-witch", name: "Scarlet Witch", alias: "Wanda Maximoff", gender: "Female", species: ["Human"], status: "Deceased", powerType: ["Magic", "Cosmic"], affiliation: ["Avengers", "Hydra"], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
+  { id: "scarlet-witch", name: "Scarlet Witch", alias: "Wanda Maximoff", gender: "Female", species: ["Human"], status: "Alive", powerType: ["Magic", "Cosmic"], affiliation: ["Avengers", "Hydra"], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
   { id: "quicksilver", name: "Quicksilver", alias: "Pietro Maximoff", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Biological"], affiliation: ["Avengers", "Hydra"], debutPhase: 2, debut: "Captain America: The Winter Soldier (2014)" },
   { id: "vision", name: "Vision", gender: "Male", species: ["Synthezoid"], status: "Alive", powerType: ["Technology", "Cosmic"], affiliation: ["Avengers"], debutPhase: 2, debut: "Avengers: Age of Ultron (2015)" },
   { id: "jarvis", name: "J.A.R.V.I.S.", gender: "Male", species: ["AI"], status: "Deceased", powerType: ["Technology"], affiliation: ["Avengers"], debutPhase: 1, debut: "Iron Man (2008)", addedOn: "2026-10-26" },
@@ -206,8 +206,9 @@ const entries: Entry[] = [
   { id: "justin-hammer", name: "Justin Hammer", gender: "Male", species: ["Human"], status: "Alive", powerType: ["None"], affiliation: ["Villain"], debutPhase: 1, debut: "Iron Man 2 (2010)" },
   { id: "aldrich-killian", name: "Aldrich Killian", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Biological"], affiliation: ["Villain"], debutPhase: 2, debut: "Iron Man 3 (2013)" },
   { id: "ultron", name: "Ultron", gender: "Male", species: ["AI"], status: "Alive", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 2, debut: "Avengers: Age of Ultron (2015)" },
-  { id: "jocasta", name: "Jocasta", alias: "Jo Carrington", gender: "Female", species: ["Synthezoid"], status: "Alive", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 6, debut: "VisionQuest (2026)", addedOn: "2026-10-26" },
+  { id: "jocasta", name: "Jocasta", alias: "Jo Carrington", gender: "Female", species: ["Synthezoid"], status: "Deceased", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 6, debut: "VisionQuest (2026)", addedOn: "2026-10-26" },
   { id: "paladin", name: "Paladin", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Technology", "Physical/Peak"], affiliation: ["Villain"], debutPhase: 6, debut: "VisionQuest (2026)", addedOn: "2026-10-26" },
+  { id: "virgil-horton", name: "Virgil Horton", alias: "The Client", gender: "Male", species: ["Human"], status: "Deceased", powerType: ["Technology"], affiliation: ["Villain"], debutPhase: 6, debut: "VisionQuest (2026)", addedOn: "2026-11-16" },
 
   // ── Fantastic Four ───────────────────────────────────────────────────────
   { id: "mister-fantastic", name: "Mister Fantastic", alias: "Reed Richards", gender: "Male", species: ["Human"], status: "Alive", powerType: ["Cosmic"], affiliation: ["Fantastic Four"], debutPhase: 6, debut: "The Fantastic Four: First Steps (2025)" },

@@ -4,6 +4,7 @@
   (marvelcinematicuniverse.fandom.com), Oct 2026. Only Marvel Studios movies and Disney+ shows
   (no Netflix/ABC shows, deleted scenes, comics, or unreleased films), only single-speaker lines
   of 4-18 words (25 for a few characters), and no line that says the speaker's own name.
+  When the wiki is blocked, word-for-word lines from news/recap articles may be used (see AUTO-UPDATE.md).
   New quotes must get addedOn: "YYYY-MM-DD" so they don't change the running cycle. Never remove quotes.
 */
 export interface Quote {
@@ -461,6 +462,7 @@ export const quotes: Quote[] = [
   {"id": "valkyrie-2", "characterId": "valkyrie", "text": "Smell like a King, because you're worthy. Old Spice.", "source": "Thor: Love and Thunder", "year": 2022},
   {"id": "vision-1", "characterId": "vision", "text": "I'm beginning to think we should have stayed in bed.", "source": "Avengers: Infinity War", "year": 2018, "to": "Wanda Maximoff"},
   {"id": "vision-2", "characterId": "vision", "text": "We don't trade lives, Captain.", "source": "Avengers: Infinity War", "year": 2018, "to": "Steve Rogers"},
+  {"id": "vision-3", "characterId": "vision", "text": "Well, we have said goodbye before. So I suppose it stands to reason we might say hello again.", "source": "VisionQuest", "year": 2026, "addedOn": "2026-11-16"},
   {"id": "vulture-1", "characterId": "vulture", "text": "You're messing with things that you don't understand!", "source": "Spider-Man: Homecoming", "year": 2017, "to": "Spider-Man"},
   {"id": "war-machine-1", "characterId": "war-machine", "text": "You... you breathe fire? Okay...", "source": "Iron Man 3", "year": 2013, "to": "Aldrich Killian"},
   {"id": "war-machine-2", "characterId": "war-machine", "text": "See you on the other side, man.", "source": "Avengers: Endgame", "year": 2019, "to": "Rocket"},
