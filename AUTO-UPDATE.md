@@ -8,7 +8,9 @@ Hamza (the owner) reviews and merges the pull request it opens. Nothing goes liv
 - **Never push to `main`.** Work on a branch named `auto-update/YYYY-MM-DD` (today's date, Europe/Berlin) and open a pull request into `main`.
 - If an `auto-update/*` pull request is already open, update that branch instead of opening a second one (rebase it on `main` first).
 - **Only released content counts.** Use a movie or show only once it has actually been released (the episode has aired, or the film is out in cinemas or on Disney+). Ignore trailers, set photos, leaks and rumours.
-- **Look everything up**, don't assume. The source of truth is the MCU Fandom wiki (https://marvelcinematicuniverse.fandom.com). Use web search only to confirm release dates.
+- **Look everything up**, don't assume. Try the MCU Fandom wiki (https://marvelcinematicuniverse.fandom.com) first.
+- **If the wiki is blocked** (pages won't open, which happens a lot for the automated run), don't stop. Use, in this order: Wikipedia (the show/film page and episode list), then reputable news/recap articles (e.g. GamesRadar, Nerdist, Parade, Slashfilm, IGN, Variety, The Direct). A status change or new character needs at least 2 sources that agree; if they disagree, leave it and list it in the PR under "double-check". Owner's call (2026-11-16): the update must stay automatic, so this fallback is allowed.
+- Find pages with web search and only open URLs the search returned.
 - Only Marvel Studios movies, Marvel Studios Disney+ series and Marvel Studios specials count. No Sony Spider-Man Universe, Fox, Netflix, ABC or Hulu shows, What If…? or other animated alternate universes, comics, or games.
 - Names come from what the show/film says (per the wiki), never from actor socials or promo. The Stark AIs count as characters, with their original debut.
 - Never remove characters or quotes. Never change an existing `id`. Never touch `SHUFFLE_SEED`, `EPOCH`, the quote/emoji seeds, the logo or any UI code.
@@ -25,8 +27,9 @@ Hamza (the owner) reviews and merges the pull request it opens. Nothing goes liv
 4. For every **new character**:
    - Add an entry to `src/data/characters.ts` in the matching section, in the same format as the others. Use only the allowed values from `src/types.ts`; if nothing fits, use the closest one and say so in the PR (don't invent new values without the owner). `debutPhase` / `debut` = their first Marvel Studios appearance. Add `addedOn: "YYYY-MM-DD"` (today), which keeps today's daily answer from changing.
    - Download a portrait: `node scripts/fetch-portrait.mjs <id> "<exact wiki page title>"`. Add the id, title and image URL to `portrait-sources.json`.
+     If the wiki is blocked, skip the portrait (the game shows an initials badge) and say so in the PR so the owner can add one.
    - Add 5 emoji clues to `src/data/emojis.ts`, ordered from vague to obvious (the first one must not give it away). Base them on facts from the wiki page, and don't copy another character's set.
-   - Add their quotes to `src/data/quotes.ts` following the rules in that file's header: `{{Quote}}` boxes on their wiki page, a single speaker, 4–18 words, from a released Marvel Studios movie/show, never containing their own name. Use ids `<characterId>-<n>`, and `addedOn: "YYYY-MM-DD"` on every new quote.
+   - Add their quotes to `src/data/quotes.ts` following the rules in that file's header: `{{Quote}}` boxes on their wiki page, a single speaker, 4–18 words, from a released Marvel Studios movie/show, never containing their own name. If the wiki is blocked, a line quoted word-for-word in a news/recap article also counts (same other rules); name the article in the PR. Use ids `<characterId>-<n>`, and `addedOn: "YYYY-MM-DD"` on every new quote.
 5. Existing characters may also have new quotes from the new release. Add those the same way, with new ids continuing their numbering, and `addedOn`.
 6. Update the status comment at the top of `src/data/characters.ts` ("status = state as of …") to name the latest release covered.
 7. Run `npm ci`, `npm run check` and `npm run build`. All must pass. Fix any problems before continuing.
@@ -42,3 +45,4 @@ Hamza (the owner) reviews and merges the pull request it opens. Nothing goes liv
 
 - 2026-10-22: Baseline. Data covers everything up to Spider-Man: Brand New Day, Daredevil: Born Again Season 2, Wonder Man and VisionQuest. Next check starts after this date.
 - 2026-10-26: No new releases since 2026-10-22 (VisionQuest episodes 5-6 drop 27/28 Oct). Backfill of VisionQuest episodes 1-4, which the baseline had missed: added Tommy Maximoff, Jocasta and Paladin (portraits + emoji clues; no wiki quotes qualify yet), plus the Stark AIs J.A.R.V.I.S., F.R.I.D.A.Y. and E.D.I.T.H. with their original debuts (owner's call: Stark AIs are in), 2 quotes. Status comment now says "VisionQuest episodes 1-4". Next check starts after this date.
+- 2026-11-16: VisionQuest episodes 5-8 (finale ~10 Nov). Fandom wiki pages were blocked, so used Wikipedia + news recaps (new fallback rule). Scarlet Witch Deceased → Alive (Doom wakes her in the post-credits scene), Jocasta Alive → Deceased (shot with an adamantium bullet). Added Virgil Horton ("The Client", no portrait yet) + 5 emoji clues, 1 new Vision quote. Status comment now says "VisionQuest (all 8 episodes)". Next check starts after this date.

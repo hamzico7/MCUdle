@@ -158,6 +158,7 @@ export const emojiClues: Record<string, readonly string[]> = {
   "ultron": ["🎵", "🏙️", "💀", "🔴", "🤖"],
   "jocasta": ["🐦", "🔪", "👩‍🔬", "🦾", "🤖"],
   "paladin": ["🕶️", "🛸", "✈️", "💰", "🎯"],
+  "virgil-horton": ["💼", "🏚️", "💑", "🧠", "🦾"],
   "mister-fantastic": ["🧠", "👶", "🌉", "🔵", "🤸"],
   "invisible-woman": ["🤰", "🔵", "🛡️", "4️⃣", "🫥"],
   "human-torch": ["😎", "🔵", "4️⃣", "✈️", "🔥"],
